@@ -24,7 +24,7 @@ export default function InputText({  campo, placeholder, type, nombre, register,
 
 
   return (
-    <>
+    <div className='flex flex-col'>
     {
       <label className={"block font-semibold"}>
         {campo}
@@ -36,7 +36,7 @@ export default function InputText({  campo, placeholder, type, nombre, register,
         className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900`}
         {...register(nombre, { required: require === true ? true : false })} placeholder={placeholder}
       />
-    </>
+    </div>
   );
 }
 
