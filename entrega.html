@@ -1,0 +1,47 @@
+<h2>
+    e. Obtener una lista de precios de los productos y sus categorías (SIN JOIN - ANSI SQL 89).
+</h2>
+
+<code>
+
+    SELECT ListPrice AS Precio, (
+        SELECT Name FROM SalesLT.ProductCategory WHERE SalesLT.ProductCategory.ProductCategoryID = SalesLT.Product.ProductCategoryID ) AS 
+        'Categoría'
+        FROM SalesLT.Product
+    </code>
+
+
+<h2>
+    g. El depto. de ventas desea armar ofertas para todos los productos que correspondan con los modelos Mountain-100 y Classic Vest
+</h2>
+    
+<code>
+
+    SELECT SalesLT.Product.Name, SalesLT.ProductModel.ProductModelID, SalesLT.ProductModel.Name AS Model, SalesLT.Product.ListPrice FROM SalesLT.Product , SalesLT.ProductModel WHERE SalesLT.ProductModel.Name IN('Mountain-100', 'Classic Vest')
+</code>
+
+<h2>
+
+    h. Obtener la lista de todos los clientes ordenados por apellido
+</h2>
+
+<code>
+
+    SELECT * FROM SalesLT.Customer ORDER BY LastName ASC
+</code>
+    
+<h2>
+    i. Obtener la lista de todos los clientes ordenados por apellido y luego por nombre usando alias en tablas y campos
+</h2>
+
+<code>
+    SELECT FirstName AS Nombre, LastName AS Apellido FROM SalesLT.Customer ORDER BY LastName ASC, FirstName ASC
+</code>
+
+<h2>
+    j. Los primeros 5 clientes ordenados por apellido y luego por nombre
+</h2>
+
+<code>
+    SELECT TOP 5 FirstName AS Nombre, LastName AS Apellido FROM SalesLT.Customer ORDER BY LastName ASC, FirstName ASC
+</code>

@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 import { useForm } from 'react-hook-form';
-import InputText from '../components/Inputs/InputText';
+import InputText from '../../components/Inputs/InputText';
 import Link from 'next/link';
 
 function page() {
