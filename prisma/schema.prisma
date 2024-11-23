@@ -9,15 +9,16 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlserver"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 
-model User {
-  id    Int    @id @default(autoincrement())
-  nombre String
-  apellido String
-  email String @unique
-  pass String
+model Categoria {
+  nombre String @id
+  edad_minima Int
+  edad_maximan Int
 }
+
+
+
