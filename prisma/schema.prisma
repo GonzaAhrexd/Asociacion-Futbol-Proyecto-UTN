@@ -17,7 +17,7 @@ datasource db {
 model Categoria {
   nombre String @id
   edad_minima Int
-  edad_maximan Int
+  edad_maxima Int @default(100)
 }
 
 
