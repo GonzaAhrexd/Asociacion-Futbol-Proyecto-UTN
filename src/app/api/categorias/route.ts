@@ -15,24 +15,37 @@ export async function GET() {
 
 // Método POST: Crea una nueva categoría en la base de datos
 export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-    const { nombre, edad_minima, edad_maxima } = body;
-
-    // Validación básica de datos
-    if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
+    try {
+      const body = await req.json();
+      const { nombre, edad_minima, edad_maxima } = body;
+  
+      // Validación básica de datos
+      if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
+        return NextResponse.json(
+          { error: 'Datos inválidos: nombre, edad_minima y edad_maxima son requeridos' },
+          { status: 400 }
+        );
+      }
+  
+      // Validación de rango de edades
+      if (edad_maxima <= edad_minima) {
+        return NextResponse.json(
+          { error: 'La edad máxima debe ser mayor que la edad mínima' },
+          { status: 400 }
+        );
+      }
+  
+      // Creación de la nueva categoría
+      const nuevaCategoria = await prisma.categoria.create({
+        data: { nombre, edad_minima, edad_maxima },
+      });
+  
+      return NextResponse.json(nuevaCategoria, { status: 201 });
+    } catch {
       return NextResponse.json(
-        { error: 'Datos inválidos: nombre, edad_minima y edad_maxima son requeridos' },
-        { status: 400 }
+        { error: 'Error al crear la categoría' },
+        { status: 500 }
       );
     }
-
-    const nuevaCategoria = await prisma.categoria.create({
-      data: { nombre, edad_minima, edad_maxima},
-    });
-
-    return NextResponse.json(nuevaCategoria, { status: 201 });
-  } catch  {
-    return NextResponse.json({ error: 'Error al crear la categoría' }, { status: 500 });
   }
-}
+  
