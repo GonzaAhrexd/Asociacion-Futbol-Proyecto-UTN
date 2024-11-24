@@ -19,13 +19,13 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { nombre, edad_minima, edad_maxima } = body;
 
-    // // Validación básica de datos
-    // if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
-    //   return NextResponse.json(
-    //     { error: 'Datos inválidos: nombre, edad_minima y edad_maxima son requeridos' },
-    //     { status: 400 }
-    //   );
-    // }
+    // Validación básica de datos
+    if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
+      return NextResponse.json(
+        { error: 'Datos inválidos: nombre, edad_minima y edad_maxima son requeridos' },
+        { status: 400 }
+      );
+    }
 
     const nuevaCategoria = await prisma.categoria.create({
       data: { nombre, edad_minima, edad_maxima},
