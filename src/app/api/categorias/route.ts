@@ -3,12 +3,19 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+interface Categoria {
+    nombre: string;
+    edad_minima: number;
+    edad_maxima:number;
+  }
+  
+
 // Utilidad común para manejar errores
 const handleError = (message: string, status: number = 500) => 
   NextResponse.json({ error: message }, { status });
 
-// Validación básica para los datos de categorías
-const validateCategoryData = (data) => {
+// Validación básica para los datos de categorías 
+const validateCategoryData = (data:Categoria) => {
   const { nombre, edad_minima, edad_maxima } = data;
 
   if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
@@ -27,6 +34,30 @@ export async function GET() {
     return NextResponse.json(categorias);
   } catch {
     return handleError('Error al obtener categorías');
+  }
+}
+// Método GET por nombre: Obtiene una categoría por su nombre
+export async function GET_BY_NAME(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const nombre = searchParams.get('nombre'); // Obtenemos el parámetro "nombre" desde la URL
+    
+    if (!nombre) {
+      return handleError('Se requiere el nombre de la categoría', 400);
+    }
+
+    // Busca la categoría por nombre
+    const categoria = await prisma.categoria.findUnique({
+      where: { nombre },
+    });
+
+    if (!categoria) {
+      return handleError(`No se encontró una categoría con el nombre "${nombre}"`, 404);
+    }
+
+    return NextResponse.json(categoria);  // Devuelve la categoría encontrada
+  } catch {
+    return handleError('Error al obtener la categoría');
   }
 }
 
