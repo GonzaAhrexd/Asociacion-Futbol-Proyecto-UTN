@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { obtenerCategorias, eliminarCategoria } from '../api/categorias';
+import { obtenerCategorias, eliminarCategoria } from '../api/services/categorias';
 import Link from 'next/link';
 
 interface Categoria {

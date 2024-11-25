@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { crearCategoria } from "@/app/api/categorias";
+import { crearCategoria } from "@/app/api/services/categorias";
 
 type CategoriaFormValues = {
   nombre: string;

@@ -12,7 +12,9 @@ export const obtenerCategorias = async () => {
   const response = await axios.get(baseUrl);
   return response.data;
 };
-export const obtenerCategoria = async (nombre: string) => {
+
+//falta este
+export const obtenerCategoriaPorNombre = async (nombre: string) => {
   const response = await axios.get(`${baseUrl}?nombre=${nombre}`);
   return response.data;
 };
@@ -27,7 +29,7 @@ export const actualizarCategoria = async (categoria:Categoria) => {
   return response.data;
 };
 
-export const eliminarCategoria = async (nombre:Categoria) => {
+export const eliminarCategoria = async (nombre:string) => {
   const response = await axios.delete(`${baseUrl}?nombre=${nombre}`);
   return response.data;
 };

@@ -6,7 +6,7 @@ export default async function Page({
 
     const nombre = (await params).nombre
     
-    return <div>My Post: {nombre}</div>
+    return <div>Categoria: {nombre}</div>
 
 
   }

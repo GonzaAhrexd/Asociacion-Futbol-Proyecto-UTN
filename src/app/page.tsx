@@ -1,10 +1,12 @@
-// import Image from "next/image";
-import Link from "next/link";
+import Link from 'next/link'
 export default function Home() {
-  return (
-   <div className="p-5">
+  const estilosBotones = "m-2 bg-gray-300 px-5 py-2 rounded"
 
-    <Link href="/categorias" className="bg-green-200 px-4 py-2 rounded-xl">Categorias</Link>
+  return (
+   <div className='flex flex-col w-fit'>
+      <h1>Home</h1>
+      <Link href="/" className={estilosBotones}>Canchas</Link>
+      <Link href="/categorias" className={estilosBotones}>Categorias</Link>
 
    </div>
   );

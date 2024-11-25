@@ -10,12 +10,13 @@ interface Categoria {
   }
   
 
-// Utilidad común para manejar errores
-const handleError = (message: string, status: number = 500) => 
+// funcion común para manejar errores
+function handleError(message: string, status: number = 500) {
   NextResponse.json({ error: message }, { status });
+}
 
 // Validación básica para los datos de categorías 
-const validateCategoryData = (data:Categoria) => {
+const validarDatosCategoria = (data:Categoria) => {
   const { nombre, edad_minima, edad_maxima } = data;
 
   if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
@@ -36,6 +37,7 @@ export async function GET() {
     return handleError('Error al obtener categorías');
   }
 }
+
 // Método GET por nombre: Obtiene una categoría por su nombre
 export async function GET_BY_NAME(req: Request) {
   try {
@@ -57,7 +59,7 @@ export async function GET_BY_NAME(req: Request) {
 
     return NextResponse.json(categoria);  // Devuelve la categoría encontrada
   } catch {
-    return handleError('Error al obtener la categoría');
+    return handleError('Error al obtener la categoría por nombre');
   }
 }
 
@@ -65,7 +67,7 @@ export async function GET_BY_NAME(req: Request) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const validationError = validateCategoryData(body);
+    const validationError = validarDatosCategoria(body);
 
     if (validationError) {
       return handleError(validationError, 400);
@@ -91,7 +93,7 @@ export async function PUT(req: Request) {
       return handleError('El nombre de la categoría es requerido para actualizar', 400);
     }
 
-    const validationError = validateCategoryData(body);
+    const validationError = validarDatosCategoria(body);
     if (validationError) {
       return handleError(validationError, 400);
     }

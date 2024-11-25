@@ -9,8 +9,8 @@ function page() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
 
   return (
-    <div className='h-screen flex flex-col items-center justify-center bg-green-500'>
-      <div className='w-full md:w-3/10 h-screen md:h-7/10 flex flex-col items-center justify-center bg-white rounded-lg p-2'> 
+    <div className='h-screen flex flex-col items-center justify-center'>
+      <div className='w-full md:w-3/10 h-screen md:h-7/10 flex flex-col items-center justify-center bg-gray-100 border shadow rounded-lg p-2'> 
         <h1 className='text-4xl'>Inicia sesión</h1>
         <form className='w-full p-2' 
         onSubmit={
