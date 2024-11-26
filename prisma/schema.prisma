@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,50 +7,180 @@ datasource db {
   url      = "file:./asociacion_futbol_bd.db"
 }
 
-
 model Categoria {
-  nombre String @id
+  nombre String @id // PK
   edad_minima Int
   edad_maxima Int @default(100)
+  
+  jugadores Jugador[]
+  equipos   Equipo[]
+  torneos   Torneo[]
 }
 
 model Persona {
-  dni Int @id
+  dni Int @id // PK
   nombre String
   fecha_nacimiento DateTime
-  direccion_calle String 
-  direccion_altura String 
+  direccion String @default("sin direccion")
+  telefono_contacto Int @default(0)
   pass String
   es_encargado Boolean @default(false)
+  
+  jugador       Jugador?
+  directorTecnico DirectorTecnico?
+  arbitro       Arbitro?
 }
 
 model Jugador {
-  dni_jugador_fk Int @id
-  nro_equipo String
-  categoria String
+  dni_jugador_fk Int @id // PK y FK
+  nro_equipo Int
+  categoria_fk String
   nro_socio Int
   foto String
-  es_responsable Boolean
+  es_responsable Boolean @default(false)
 
+  persona   Persona   @relation(fields: [dni_jugador_fk], references: [dni])
+  categoria Categoria @relation(fields: [categoria_fk], references: [nombre])
+  equipo    Equipo?   @relation(fields: [nro_equipo], references: [nro_equipo])
+  partidos  JugadorPartido[]
 }
 
-
-model DT {
-  dni_dt_fk Int @id
-  experiencia Int 
+model DirectorTecnico {
+  dni_dt_fk Int @id // PK y FK
+  nivel_experiencia String
   estilo String
+
+  persona Persona @relation(fields: [dni_dt_fk], references: [dni])
+  equipos Equipo[]
 }
 
 model Arbitro {
-  dni_arbitro_fk Int @id
+  dni_arbitro_fk Int @id // PK y FK
   nivel_experiencia String
   tiene_certificacion Boolean
+
+  persona Persona @relation(fields: [dni_arbitro_fk], references: [dni])
+  partidos Partido[]
 }
 
-model Encargado {
-  dni_encargado_fk Int @id
-  cant_torneos_creados Int
-  cant_torneos_habilitados Int
+model Equipo {
+  nro_equipo Int @id // PK
+  nombre_torneo String
+  dni_dt_fk Int
+  categoria_fk String
+  nombre String
+  division String
+
+  categoria Categoria @relation(fields: [categoria_fk], references: [nombre])
+  directorTecnico DirectorTecnico @relation(fields: [dni_dt_fk], references: [dni_dt_fk])
+  jugadores Jugador[]
+  torneos   EquipoTorneo[]
+  partidos  EquipoPartido[]
 }
 
+model EquipoPartido {
+  nro_equipo_fk Int
+  nro_partido_fk Int
+  se_presentaron Boolean
+  goles_realizados Int
 
+  equipo  Equipo  @relation(fields: [nro_equipo_fk], references: [nro_equipo])
+  partido Partido @relation(fields: [nro_partido_fk], references: [nro_partido])
+
+  @@id([nro_equipo_fk, nro_partido_fk])
+}
+
+model Partido {
+  nro_partido Int @id // PK
+  nro_fecha_fk Int
+  dni_arbitro_fk Int
+  cancha_fk String
+  fecha_hora DateTime
+
+  fecha   Fecha   @relation(fields: [nro_fecha_fk], references: [nro_fecha])
+  arbitro Arbitro @relation(fields: [dni_arbitro_fk], references: [dni_arbitro_fk])
+  cancha  Cancha  @relation(fields: [cancha_fk], references: [nombre])
+  equipos EquipoPartido[]
+  jugadores JugadorPartido[]
+}
+
+model Cancha {
+  nombre String @id // PK
+  direccion String
+
+  partidos Partido[]
+}
+
+model EquipoTorneo {
+  nro_equipo_fk Int
+  nombre_torneo_fk String
+
+  equipo Equipo @relation(fields: [nro_equipo_fk], references: [nro_equipo])
+  torneo Torneo @relation(fields: [nombre_torneo_fk], references: [nombre])
+
+  @@id([nro_equipo_fk, nombre_torneo_fk])
+}
+
+model Torneo {
+  nombre String @id // PK
+  categoria_fk String
+  inscripciones_inicio DateTime
+  inscripciones_fin DateTime
+  inicio DateTime
+  fin DateTime
+  esta_habilitado Boolean
+
+  categoria Categoria @relation(fields: [categoria_fk], references: [nombre])
+  equipos EquipoTorneo[]
+  fixtures Fixture[]
+}
+
+model Fixture {
+  nro_fixture Int @id // PK
+  nombre_torneo_fk String
+  cant_ruedas Int
+
+  torneo Torneo @relation(fields: [nombre_torneo_fk], references: [nombre])
+  ruedas Rueda[]
+}
+
+model Rueda {
+  nro_rueda Int @id // PK
+  nro_fixture_fk Int
+  cant_fechas Int
+
+  fixture Fixture @relation(fields: [nro_fixture_fk], references: [nro_fixture])
+  fechas RuedaFecha[]
+}
+
+model Fecha {
+  nro_fecha Int @id // PK
+  cant_partidos Int
+
+  ruedas RuedaFecha[]
+  partidos Partido[]
+}
+
+model RuedaFecha {
+  nro_rueda_fk Int
+  nro_fecha_fk Int
+
+  fecha Fecha @relation(fields: [nro_fecha_fk], references: [nro_fecha])
+  rueda Rueda @relation(fields: [nro_rueda_fk], references: [nro_rueda])
+
+  @@id([nro_rueda_fk, nro_fecha_fk])
+}
+
+model JugadorPartido {
+  dni_jugador_fk Int
+  nro_partido_fk Int
+  cant_faltas Int
+  cant_goles Int
+  cant_tarjetas_amarillas Int
+  fue_expulsado Boolean
+
+  partido Partido @relation(fields: [nro_partido_fk], references: [nro_partido])
+  jugador Jugador @relation(fields: [dni_jugador_fk], references: [dni_jugador_fk])
+
+  @@id([dni_jugador_fk, nro_partido_fk])
+}
