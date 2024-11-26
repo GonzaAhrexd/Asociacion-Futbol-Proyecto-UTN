@@ -24,7 +24,8 @@ export async function POST(req: Request) {
     fecha_nacimiento: convertToDate,
     direccion_calle: direccion_calle, 
     direccion_altura:  direccion_altura,
-    pass: pass
+    pass: pass,
+    es_encargado: false
     }
   }); 
 

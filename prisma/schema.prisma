@@ -27,6 +27,7 @@ model Persona {
   direccion_calle String 
   direccion_altura String 
   pass String
+  es_encargado Boolean @default(false)
 }
 
 model Jugador {
