@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { obtenerCategorias, eliminarCategoria } from '../api/services/categorias';
 import Link from 'next/link';
-
+import DataTable from 'react-data-table-component';
+import ColumnCategorias from './columnCategorias';
+import expandedComponents from './expandedCategoria';
 interface Categoria {
   nombre: string;
   edad_minima: number;
@@ -43,6 +45,21 @@ const ListaCategorias = () => {
           Agregar
         </Link>
       </div>
+
+      <DataTable
+        columns={ColumnCategorias}
+        data={categorias}
+        pagination
+        expandableRows
+        expandableRowsComponent={expandedComponents}
+        // customStyles={customStyles}
+        responsive={true}
+        striped={true}
+        highlightOnHover={true}
+        noDataComponent="No hay denuncias para mostrar"
+        defaultSortFieldId={"Fecha"}
+      // expandableIcon={expandableIcon}
+      />
 
       <ul className='mt-5 w-4/10'>
         {categorias.map((categoria) => (
