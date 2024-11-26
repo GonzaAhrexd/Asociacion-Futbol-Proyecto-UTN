@@ -20,5 +20,42 @@ model Categoria {
   edad_maxima Int @default(100)
 }
 
+model Persona {
+  dni Int @id
+  nombre String
+  fecha_nacimiento DateTime
+  direccion_calle String 
+  direccion_altura String 
+  pass String
+}
+
+model Jugador {
+  dni_jugador_fk Int @id
+  nro_equipo String
+  categoria String
+  nro_socio Int
+  foto String
+  es_responsable Boolean
+
+}
+
+
+model DT {
+  dni_dt_fk Int @id
+  experiencia Int 
+  estilo String
+}
+
+model Arbitro {
+  dni_arbitro_fk Int @id
+  nivel_experiencia String
+  tiene_certificacion Boolean
+}
+
+model Encargado {
+  dni_encargado_fk Int @id
+  cant_torneos_creados Int
+  cant_torneos_habilitados Int
+}
 
 
