@@ -14,20 +14,20 @@ export async function POST(req: Request) {
 
   const convertToDate = new Date(fecha_nacimiento)
 
-  
+
   console.log(body)
 
   const nuevaPersona = await prisma.persona.create({
     data: {
       dni: Number(dni),
-    nombre:  nombre + apellido,
-    fecha_nacimiento: convertToDate,
-    direccion_calle: direccion_calle, 
-    direccion_altura:  direccion_altura,
-    pass: pass,
-    es_encargado: false
+      nombre: nombre + apellido,
+      fecha_nacimiento: convertToDate,
+      direccion_calle: direccion_calle,
+      direccion_altura: direccion_altura,
+      pass: pass,
+      es_encargado: false,
     }
-  }); 
+  });
 
 
   return NextResponse.json(nuevaPersona, { status: 201 });
