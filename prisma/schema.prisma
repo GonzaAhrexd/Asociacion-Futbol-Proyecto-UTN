@@ -65,12 +65,11 @@ model Arbitro {
 
 model Equipo {
   nro_equipo Int @id // PK
-  nombre_torneo String
   dni_dt_fk Int
-  categoria_fk String
+  categoria_fk String 
   nombre String
   division String
-
+  
   categoria Categoria @relation(fields: [categoria_fk], references: [nombre])
   directorTecnico DirectorTecnico @relation(fields: [dni_dt_fk], references: [dni_dt_fk])
   jugadores Jugador[]
