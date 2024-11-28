@@ -8,8 +8,6 @@ function handleError(message: string, status: number = 500) {
 }
 
 /*
-
-
 model Equipo {
   nro_equipo Int @id // PK
   dni_dt_fk Int
@@ -17,17 +15,11 @@ model Equipo {
   nombre String
   division String
 
-  categoria Categoria @relation(fields: [categoria_fk], references: [nombre])
-  directorTecnico DirectorTecnico @relation(fields: [dni_dt_fk], references: [dni_dt_fk])
-  jugadores Jugador[]
-  torneos   EquipoTorneo[]
-  partidos  EquipoPartido[]
 }
-
 
 */
 
-export async function GET(req: Request, res: any) {
+export async function GET() {
   try {
     // Realizar una consulta cruda para obtener todos los equipos
     const equipos = await prisma.$queryRaw`SELECT * FROM Equipo`;
@@ -40,7 +32,7 @@ export async function GET(req: Request, res: any) {
 }
 
 
-export async function POST(req: Request, res: any) {
+export async function POST(req: Request) {
   try{
     // Obtener el cuerpo de la solicitud
     const body = await req.json();
@@ -60,7 +52,7 @@ export async function POST(req: Request, res: any) {
 }
 }
 
-export async function PUT(req: Request, res: any) {
+export async function PUT(req: Request) {
   try{
     // Obtener el cuerpo de la solicitud
     const body = await req.json();
@@ -79,7 +71,7 @@ export async function PUT(req: Request, res: any) {
   }
 }
 
-export async function DELETE(req: Request, res: any) {
+export async function DELETE(req: Request) {
   try{
     // Obtener el cuerpo de la solicitud
     const body = await req.json();

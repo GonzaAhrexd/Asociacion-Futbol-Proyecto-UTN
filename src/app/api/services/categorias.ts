@@ -13,7 +13,6 @@ export const obtenerCategorias = async () => {
   return response.data;
 };
 
-//falta este~
 export const obtenerCategoriaPorNombre = async (nombre: string) => {
   const response = await axios.get(`${baseUrl}?nombre=${nombre}`);
   return response.data;
