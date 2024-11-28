@@ -6,6 +6,7 @@ import Link from 'next/link';
 import DataTable from 'react-data-table-component';
 import ColumnCategorias from './columnCategorias';
 import expandedComponents from './expandedCategoria';
+
 interface Categoria {
   nombre: string;
   edad_minima: number;
@@ -13,6 +14,7 @@ interface Categoria {
 }
 
 const ListaCategorias = () => {
+  
   const [categorias, setCategorias] = useState<Categoria[]>([]);
 
   useEffect(() => {
@@ -56,30 +58,11 @@ const ListaCategorias = () => {
         responsive={true}
         striped={true}
         highlightOnHover={true}
-        noDataComponent="No hay denuncias para mostrar"
+        noDataComponent="No hay categorias para mostrar"
         defaultSortFieldId={"Fecha"}
       // expandableIcon={expandableIcon}
       />
 
-      <ul className='mt-5 w-4/10'>
-        {categorias.map((categoria) => (
-          <li key={categoria.nombre} className='flex justify-between'>
-            {categoria.nombre} - Edad mínima: {categoria.edad_minima}, Edad máxima: {categoria.edad_maxima}
-
-            <div>
-              <Link href={`/categorias/editar/${categoria.nombre}`} className='text-blue-700'>
-                Editar
-              </Link>
-              <button
-                onClick={() => handleEliminar(categoria.nombre)}
-                className='text-red-700 ml-2'
-              >
-                Eliminar
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
