@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import NavBar from '../components/NavBar/NavBar'
+import NavBar from "../components/NavBar/NavBar";
 import "./globals.css";
+import SessionWrapper from "@/components/General/SessionWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -17,7 +18,6 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Asociación de Fútbol Resistencia",
   description: "Proyecto Integrador DABD",
-  
 };
 
 export default function RootLayout({
@@ -36,8 +36,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <NavBar />
-        {children}
+        <SessionWrapper>
+          <NavBar />
+          {children}
+        </SessionWrapper>
       </body>
     </html>
   );
