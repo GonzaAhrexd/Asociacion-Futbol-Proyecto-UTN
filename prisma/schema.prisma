@@ -125,8 +125,8 @@ model Torneo {
   categoria_fk String
   inscripciones_inicio DateTime
   inscripciones_fin DateTime
-  inicio DateTime
-  fin DateTime
+  inicio_torneo DateTime
+  fin_torneo DateTime
   esta_habilitado Boolean
 
   categoria Categoria @relation(fields: [categoria_fk], references: [nombre])

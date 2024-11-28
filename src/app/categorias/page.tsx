@@ -31,18 +31,6 @@ const ListaCategorias = () => {
     fetchCategorias();
   }, []);
 
-  const handleEliminar = async (nombre: string) => {
-    if (window.confirm(`¿Estás seguro de que deseas eliminar la categoría ${nombre}?`)) {
-      try {
-        await eliminarCategoria(nombre);
-        setCategorias(categorias.filter((categoria) => categoria.nombre !== nombre));
-        alert('Categoría eliminada');
-      } catch (error) {
-        console.error('Error al eliminar la categoría:', error);
-        alert('Error al eliminar la categoría');
-      }
-    }
-  };
 
   return (
     <div className='p-5'>
@@ -136,13 +124,11 @@ const ListaCategorias = () => {
         pagination
         expandableRows
         expandableRowsComponent={expandedComponents}
-        // customStyles={customStyles}
         responsive={true}
         striped={true}
         highlightOnHover={true}
         noDataComponent="No hay categorías para mostrar"
         defaultSortFieldId={"Fecha"}
-      // expandableIcon={expandableIcon}
       />
 
     
