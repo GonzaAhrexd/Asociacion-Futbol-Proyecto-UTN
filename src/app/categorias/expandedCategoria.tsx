@@ -1,9 +1,15 @@
 import React from 'react'
 import InputText from '@/components/Inputs/InputText'
-import {  eliminarCategoria } from '../api/services/categorias';
+import {  eliminarCategoria, actualizarCategoria } from '../api/services/categorias';
 
 import InputNumber from '@/components/Inputs/InputNumber'
 import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2'
+type dataProps = {
+    nombre: string;
+    edad_minima: number;
+    edad_maxima: number;
+}
 type Categoria = {
     data:any
 }
@@ -26,7 +32,42 @@ function ExpandedCategoria({ data }: Categoria) {
   
     return (
       <div>
-        <form className="flex flex-col items-center justify-center">
+        <form className="flex flex-col items-center justify-center" 
+        onSubmit={
+          handleSubmit(async (values ) => {
+            Swal.fire({
+              icon: 'warning',
+              title: '¿Estás seguro de que deseas editar la categoría?',
+              showCancelButton: true,
+              confirmButtonText: `Editar`,
+              cancelButtonText: `Cancelar`,
+              confirmButtonColor: '#22C55E',
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                console.log(values)
+                values.nombre_original = data.nombre
+                values.nombre_nuevo = values.nombre
+                values.edad_minima = Number(values.edad_minima)
+                values.edad_maxima = Number(values.edad_maxima)
+                
+                // @ts-ignore
+                await actualizarCategoria(values);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Categoría editada',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  window.location.reload();
+                })
+
+              }
+            })
+            console.log(data)
+          }
+          )
+        }
+        >
           <InputText
             campo="Nombre"
             valor={data.nombre}

@@ -19,6 +19,9 @@ function handleError(message: string, status: number = 500) {
 const validarDatosCategoria = (data:Categoria) => {
   const { nombre, edad_minima, edad_maxima } = data;
 
+  console.log(data)
+
+
   if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
     return 'Datos inválidos: "nombre", "edad_minima" y "edad_maxima" son requeridos';
   }
@@ -84,31 +87,45 @@ export async function POST(req: Request) {
 }
 
 // Método PUT: Actualiza una categoría existente
-export async function PUT(req: Request) {
+export async function PUT(req: Request, res: any) {
   try {
+
     const body = await req.json();
-    const { nombre } = body;
-
-    if (!nombre) {
-      return handleError('El nombre de la categoría es requerido para actualizar', 400);
-    }
-
-    const validationError = validarDatosCategoria(body);
-    if (validationError) {
-      return handleError(validationError, 400);
-    }
-
+    
+    console.log(body);
+        
+    const { nombre_original, nombre_nuevo, edad_maxima, edad_minima } = body;
+    
+    // return res.json("Hola");
+    if (!nombre_original) {
+        return handleError('El nombre de la categoría es requerido para actualizar', 400);
+      }
+      
+      const validationError = validarDatosCategoria(body);
+      
+      console.log(validationError)
+      
+      if (validationError) {
+          return handleError(validationError, 400);
+        }
+        
+        // return NextResponse.json({ message: 'Categoría actualizada exitosamente' }, { status: 200 });
+        
     const categoriaExistente = await prisma.categoria.findUnique({
-      where: { nombre },
+      where: { nombre: nombre_original },
     });
 
     if (!categoriaExistente) {
-      return handleError(`No se encontró una categoría con el nombre "${nombre}"`, 404);
+      return handleError(`No se encontró una categoría con el nombre "${nombre_original}"`, 404);
     }
 
     const categoriaActualizada = await prisma.categoria.update({
-      where: { nombre },
-      data: body,
+      where: { nombre: nombre_original },
+      data: {
+        nombre: nombre_nuevo,
+        edad_minima: edad_minima,
+        edad_maxima: edad_maxima,
+      },
     });
 
     return NextResponse.json(
