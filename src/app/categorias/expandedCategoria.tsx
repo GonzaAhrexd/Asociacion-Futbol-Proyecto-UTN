@@ -5,6 +5,7 @@ import {  eliminarCategoria, actualizarCategoria } from '../api/services/categor
 import InputNumber from '@/components/Inputs/InputNumber'
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2'
+
 type dataProps = {
     nombre: string;
     edad_minima: number;
@@ -31,8 +32,8 @@ function ExpandedCategoria({ data }: Categoria) {
     };
   
     return (
-      <div>
-        <form className="flex flex-col p-5 bg-gray-100 shadow m-2" 
+      <div className='flex justify-center'>
+        <form className="flex flex-col p-5 bg-gray-100 shadow m-2 w-[400px]" 
           onSubmit={
           handleSubmit(async (values ) => {
             Swal.fire({
