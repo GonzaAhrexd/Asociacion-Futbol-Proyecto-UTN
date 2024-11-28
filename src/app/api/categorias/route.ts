@@ -21,7 +21,6 @@ const validarDatosCategoria = (data:Categoria) => {
 
   console.log(data)
 
-
   if (!nombre || typeof edad_minima !== 'number' || typeof edad_maxima !== 'number') {
     return 'Datos inválidos: "nombre", "edad_minima" y "edad_maxima" son requeridos';
   }
