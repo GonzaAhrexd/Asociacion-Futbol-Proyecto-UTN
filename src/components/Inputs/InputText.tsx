@@ -25,7 +25,7 @@ export default function InputText({width,  campo, placeholder, type, nombre, reg
 
 
   return (
-    <div className='flex flex-col'>
+    <div className='flex flex-col mt-2'>
     {
       <label className={"block font-semibold"}>
         {campo}

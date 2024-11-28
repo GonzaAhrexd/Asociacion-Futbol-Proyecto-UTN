@@ -37,7 +37,7 @@ function navBar() {
       {user ? (
         <>
           <button
-            className="text-white bg-red-900 px-4 py-2 rounded-xl mr-2"
+            className="text-white bg-red-700 px-4 py-2 rounded-xl mr-2"
             onClick={() => {
               signOut({ callbackUrl: "/login" });
             }}
