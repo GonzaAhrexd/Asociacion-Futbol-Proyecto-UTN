@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { registerUser } from '@/utils/register/register';
 import { useState } from 'react';
 import InputDate from '@/components/Inputs/InputDate';
+import Swal from 'sweetalert2';
 function page() {
 
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -21,8 +22,6 @@ function page() {
                 <form className='w-full p-2'
                     onSubmit={
                         handleSubmit(async (data) => {
-
-
                             if (data.pass !== data.pass_repeat) {
                                 // alert('Las contraseñas no coinciden')
                                 setMensajeError('Las contraseñas no coinciden')
@@ -30,11 +29,16 @@ function page() {
                             } else {
                                 setMensajeError('')
                             }
-
-
                             try {
-                                console.log(data)
                                 await registerUser(data)
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Usuario registrado',
+                                    showConfirmButton: true,
+                                    timer: 1500
+                                }).then(() => {
+                                    window.location.href = '/'
+                                })
                             } catch (error) {
                                 console.log(error);
                             }
