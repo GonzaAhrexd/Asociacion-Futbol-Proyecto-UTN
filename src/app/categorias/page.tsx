@@ -17,6 +17,7 @@ interface Categoria {
 }
 
 const ListaCategorias = () => {
+  
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [vistaAgregar, setVistaAgregar] = useState(false);
 

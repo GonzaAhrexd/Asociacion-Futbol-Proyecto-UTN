@@ -32,8 +32,8 @@ function ExpandedCategoria({ data }: Categoria) {
   
     return (
       <div>
-        <form className="flex flex-col items-center justify-center" 
-        onSubmit={
+        <form className="flex flex-col p-5 bg-gray-100 shadow m-2" 
+          onSubmit={
           handleSubmit(async (values ) => {
             Swal.fire({
               icon: 'warning',
@@ -77,33 +77,36 @@ function ExpandedCategoria({ data }: Categoria) {
             setValue={setValue}
             errors={errors.nombre}
           />
-          <InputNumber
-            campo="Edad mínima"
-            valor={data.edad_minima}
-            nombre="edad_minima"
-            register={register}
-            setValue={setValue}
-            error={errors.edad_minima}
-            type="number"
-            maxLenght={3}
-          />
-          <InputNumber
-            campo="Edad máxima"
-            valor={data.edad_maxima}
-            nombre="edad_maxima"
-            register={register}
-            setValue={setValue}
-            error={errors.edad_maxima}
-            type="number"
-            maxLenght={3}
-          />
-          <div className="flex flex-col items-center justify-center w-full">
-            <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded w-4/10 my-2">
+          <div className='flex'>
+            <InputNumber
+              campo="Edad mínima"
+              valor={data.edad_minima}
+              nombre="edad_minima"
+              register={register}
+              setValue={setValue}
+              error={errors.edad_minima}
+              type="number"
+              maxLenght={3}
+            />
+            <InputNumber
+              campo="Edad máxima"
+              valor={data.edad_maxima}
+              nombre="edad_maxima"
+              register={register}
+              setValue={setValue}
+              error={errors.edad_maxima}
+              type="number"
+              maxLenght={3}
+            />
+          </div>
+          
+          <div className="flex items-center justify-center ">
+            <button className=" mr-2 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-5/10 my-2">
               Editar
             </button>
             <div
               onClick={() => handleEliminar(data.nombre)}
-              className="flex flex-col items-center justify-center bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded w-4/10"
+              className="flex items-center justify-center bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded w-5/10"
             >
               Eliminar
             </div>
