@@ -20,7 +20,7 @@ const authOptions = {
 
         const userFound = await db.persona.findUnique({
           where: {
-            dni: Number(credentials.dni),
+            dni: Number(credentials?.dni),
           },
         });
 

@@ -5,6 +5,7 @@ function navBar() {
 
   const estilosBotones="bg-green-200 px-4 py-2 rounded-xl mr-2"
 
+
   return (
     <div className='bg-green-400 flex flex-row items-center justify-center w-full p-1'> 
 
@@ -18,8 +19,8 @@ function navBar() {
       <Link href="/personas" className={estilosBotones}>Personas</Link>
       <Link href="/" className={estilosBotones}>Partidos</Link>
       <Link href="/" className={estilosBotones}>Estadisticas</Link>
-      <Link href="/login" className={estilosBotones}>Iniciar sesion</Link>
-      <Link href="/register" className={estilosBotones}>Registrarse</Link>
+        <Link href="/login" className={estilosBotones}>Iniciar sesion</Link>
+        <Link href="/register" className={estilosBotones}>Registrarse</Link>
 
     </div>
   )
