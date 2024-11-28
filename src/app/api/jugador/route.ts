@@ -45,7 +45,7 @@ function handleError(message: string, status: number = 500) {
 export async function GET(req: Request, res: any) {
   try {
     // Realizar una consulta cruda para obtener todos los jugadores
-    const jugadores = await prisma.$queryRaw`SELECT * FROM Jugador`;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              const jugadores = await prisma.$queryRaw`SELECT * FROM Jugador`;
 
     // Devolver los jugadores como respuesta
     return NextResponse.json(jugadores);
