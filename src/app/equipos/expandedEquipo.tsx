@@ -1,71 +1,73 @@
-'use client';
-
-import React, { useEffect, useState } from 'react';
-import { obtenerEquipos, crearEquipo } from '../../utils/equipos/equipos';
-import DataTable from 'react-data-table-component';
-import ColumnCategorias from './columnEquipos';
-import expandedComponents from './expandedEquipo';
+import React from 'react';
+import InputText from '@/components/Inputs/InputText';
+import { eliminarEquipo, actualizarEquipo } from '../../utils/equipos/equipos';
+import InputNumber from '@/components/Inputs/InputNumber';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
-import InputText from '@/components/Inputs/InputText';
 
-interface Equipo {
-    nombre: string;
-    dni_dt_fk: number;
-    categoria_fk: number;
-    division: string;
-  }
+type Equipo = {
+  data: any;
+};
 
-export default function ListaEquipos(){
+export default function ExpandedEquipo({ data }: Equipo) {
+  
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
-    const [equipos, setEquipos] = useState<Equipo[]>([]);
-    const [vistaAgregar, setVistaAgregar] = useState(false);
-
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
-
-    useEffect(() => {
-        const fetchEquipos = async () => {
-        const equipos = await obtenerEquipos();
-        setEquipos(equipos);
-        };
-
-        fetchEquipos();
-    }, []);
-
-    function cancelarEnvio(){
-        setVistaAgregar(false)
+  const handleEliminar = async (nombre: string) => {
+    if (window.confirm(`¿Estás seguro de que deseas eliminar el equipo ${nombre}?`)) {
+      try {
+        await eliminarEquipo(nombre);
+        alert('equipos eliminado');
+        window.location.reload();
+      } catch (error) {
+        console.error('Error al eliminar el equipo:', error);
+        alert('Error al eliminar el equipo');
       }
+    }
+  };
 
-      const onSubmit = async (values: any) => {
-        
+  const onSubmit = async (values: any) => {
+    Swal.fire({
+      icon: 'warning',
+      title: '¿Estás seguro de que deseas editar el equipo?',
+      showCancelButton: true,
+      confirmButtonText: 'Editar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#22C55E',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
         console.log(values);
-        // values.dni_dt_fk = Number(values.dni_dt_fk);
-        // values.categoria_fk = Number(values.categoria_fk);
-        await crearEquipo(values);
-            
-      };
 
-    return(
 
-        <div>
-            <div className='flex p-4'>
-                <h1 className='text-3xl mr-2'>Listado de equipos</h1>
-                <button
-                    className="bg-blue-200 px-4 py-2 rounded-xl"
-                    onClick={() => setVistaAgregar(!vistaAgregar)}
-                >
-                    Agregar
-                </button>
-            </div>
+        values.nombre_original = data.nombre;
+        values.nombre_nuevo = values.nombre;
+        values.edad_minima = Number(values.edad_minima);
+        values.edad_maxima = Number(values.edad_maxima);
 
-            {vistaAgregar && (
-                <div className="flex items-center justify-center">
-                    <form
-                    className="flex flex-col p-5 bg-gray-100 shadow m-2 w-[400px]"
-                    onSubmit={handleSubmit(onSubmit)}
-                    >
-                    {/* Input para el nombre del equipo */}
-                    <InputText
+        // @ts-ignore
+        await actualizarEquipo(values);
+        Swal.fire({
+          icon: 'success',
+          title: 'equipos editado',
+          showConfirmButton: false,
+          timer: 1500,
+        }).then(() => {
+          window.location.reload();
+        });
+      }
+    });
+  };
+
+  return (
+    
+    <div className="flex justify-center">
+    
+      <form
+        className="flex flex-col p-5 bg-gray-100 shadow m-2 w-[400px]"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+      {/* Input para el nombre del equipo */}
+      <InputText
                       campo="Nombre del equipo"
                       placeholder="Ej: Barcelona FC"
                       type="text"
@@ -138,38 +140,21 @@ export default function ListaEquipos(){
                         )}
                     </div>
 
-
-                    <div className='flex'>
-                        <button className="mr-2 bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full my-2">
-                        Crear
-                        </button>
-                        <button className="mr-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full my-2" onClick={cancelarEnvio}>
-                        Cancelar
-                        </button>
-                    </div>
-
-                    
-                    </form>
-                </div>
-                )}
-
-
-
-            <DataTable
-                columns={ColumnCategorias}
-                data={equipos}
-                pagination
-                expandableRows
-                expandableRowsComponent={expandedComponents}
-                responsive
-                striped
-                highlightOnHover
-                noDataComponent="No hay equipos para mostrar"
-                // defaultSortFieldId="Fecha"
-            />
+        <div className="flex items-center justify-center ">
+          <button className="mr-2 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-5/10 my-2">
+            Editar
+          </button>
+          <div
+            onClick={() => handleEliminar(data.nombre)}
+            className="flex items-center justify-center bg-red-400 hover:bg-red-500 text-white font-bold py-2 px-4 rounded w-5/10"
+          >
+            Eliminar
+          </div>
         </div>
-
-        
-
-    );
+      </form>
+    </div>
+    
+    
+  );
 }
+
