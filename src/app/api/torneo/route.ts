@@ -21,31 +21,47 @@ function handleError(message: string, status: number = 500) {
 }
 
 
-export async function GET(req: Request, res: any) {
-    try {
-        // Realizar una consulta cruda para obtener todos los torneos
-        const torneos = await prisma.$queryRaw`SELECT * FROM Torneo`;
-    
-        // Devolver los torneos como respuesta
-        return NextResponse.json(torneos);
-    } catch (error) {
-        return handleError('Error al obtener los torneos');
-    }
-    }
+export async function GET(req: Request) {
+  try {
+    // Consulta cruda para obtener todos los torneos
+//    const torneos = await prisma.$queryRaw`SELECT * FROM Torneo`;
+    const jugadores = await prisma.$queryRaw`SELECT * FROM Torneo`;
 
-    export async function POST(req: Request, res: any) {
-      try{
-        // Obtener los datos del body
-        const { nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado } = await req.json();
+    // Devolver los torneos como respuesta
+    return NextResponse.json(jugadores, { status: 200 });
+  } catch (error) {
+    console.error('Error al obtener los torneos:', error);
+    return NextResponse.json(
+      { error: 'Error al obtener los torneos' },
+      { status: 500 }
+    );
+  }
+}
 
-        // Crear un torneo
-        const torneo = await prisma.$queryRaw`INSERT INTO Torneo (nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado) VALUES (${nombre}, ${categoria_fk}, ${inscripciones_inicio}, ${inscripciones_fin}, ${inicio_torneo}, ${fin_torneo}, ${esta_habilitado})`;
-        // Devolver el torneo creado
-        return NextResponse.json(torneo);
-      } catch (error) {
-        return handleError('Error al crear el torneo');
-      }
-    }
+export async function POST(req: Request, res: any) {
+  try {
+    // Realizar una consulta cruda para obtener todos los equipos
+    const { nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado } = await req.json();
+    // Devolver los equipos como respuesta
+
+      // Haz que las fechas tengan este formato 2024-11-25T23:59:59.000Z
+    const inicioInsc = new Date(inscripciones_inicio).toISOString();
+    const finInsc = new Date(inscripciones_fin).toISOString();
+    const inicioTorneo = new Date(inicio_torneo).toISOString();
+    const finTorneo = new Date(fin_torneo).toISOString();
+
+
+    // Hazlo con una consulta SQL Cruda para subir los datos a la tabla Torneo
+
+    const torneo = await prisma.$queryRaw`INSERT INTO Torneo (nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado) VALUES (${nombre}, ${categoria_fk}, ${inicioInsc}, ${finInsc}, ${inicioTorneo}, ${finTorneo}, ${esta_habilitado})`;
+
+
+      return NextResponse.json("Torneo creado");
+  } catch (error) {
+    console.log(error)
+    return handleError('Error al obtener los equipos');
+  }
+}
 
 
     export async function PUT(req: Request, res: any) {
