@@ -6,13 +6,12 @@ import DataTable from 'react-data-table-component';
 import ColumnCategorias from './columnEquipos';
 import expandedComponents from './expandedEquipo';
 import { useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
 import InputText from '@/components/Inputs/InputText';
 
 interface Equipo {
     nombre: string;
     dni_dt_fk: number;
-    categoria_fk: number;
+    categoria_fk: string;
     division: string;
   }
 
@@ -39,8 +38,7 @@ export default function ListaEquipos(){
       const onSubmit = async (values: any) => {
         
         console.log(values);
-        // values.dni_dt_fk = Number(values.dni_dt_fk);
-        // values.categoria_fk = Number(values.categoria_fk);
+        values.dni_dt_fk = Number(values.dni_dt_fk);
         await crearEquipo(values);
             
       };
@@ -77,19 +75,19 @@ export default function ListaEquipos(){
                     />
                     {/* Select para elegir la división */}
                    <div className="mt-2">
-                      <label className="block font-semibold" htmlFor="dni_dt">
+                      <label className="block font-semibold" htmlFor="dni_dt_fk">
                         DNI del Director Tecnico
                       </label>
                       <select
-                        id="dni_dt"
-                        {...register("dni_dt", { required: "Seleccione un dni de DT" })}
+                        id="dni_dt_fk"
+                        {...register("dni_dt_fk", { required: "Seleccione un dni de DT" })}
                         className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900 ${
                           errors.dni_dt ? 'mt-1 text-red-600' : ''
                         }`}
                       >
-                        <option value="A">444444444</option>
-                        <option value="B">555555555</option>
-                        <option value="C">666666666</option>
+                        <option value="444444">444444</option>
+                        <option value="555555">555555</option>
+                        <option value="666666">666666</option>
                       </select>
                       {errors.dni_dt && (
                         <p className="text-red-500 text-xs italic">{errors.dni_dt.message}</p>
@@ -129,9 +127,9 @@ export default function ListaEquipos(){
                             errors.categoria ? 'border-red-500' : ''
                           }`}
                         >
-                          <option value="A">Juvenil</option>
-                          <option value="B">Mayores</option>
-                          <option value="C">Jubilados</option>
+                          <option value="Juvenil">Juvenil</option>
+                          <option value="Mayores">Mayores</option>
+                          <option value="Jubilados">Jubilados</option>
                         </select>
                         {errors.categoria && (
                           <p className="text-red-500 text-xs italic">{errors.categoria.message}</p>
