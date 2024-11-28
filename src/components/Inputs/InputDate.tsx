@@ -29,12 +29,12 @@ export default function InputDate({
   }, [setValue, nombre, valor]);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full">
       <label className="block font-semibold">{campo}</label>
       {errors && <span className="mt-1 text-red-600">{errors.message}</span>}
       <input
         type="date"
-        className="block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900"
+        className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900`}
         {...register(nombre, {
           required: require ? `${campo} es requerido` : false, // Mensaje personalizado
           validate: (value: any) =>

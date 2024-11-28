@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { obtenerCategorias, eliminarCategoria } from '../api/services/categorias';
+import { obtenerCategorias, eliminarCategoria, crearCategoria } from '../api/services/categorias';
 import Link from 'next/link';
 import DataTable from 'react-data-table-component';
 import ColumnCategorias from './columnCategorias';
 import expandedComponents from './expandedCategoria';
+import { useForm } from 'react-hook-form';
+import Swal from 'sweetalert2';
+import InputText from '@/components/Inputs/InputText';
+import InputNumber from '@/components/Inputs/InputNumber';
 interface Categoria {
   nombre: string;
   edad_minima: number;
@@ -13,8 +17,11 @@ interface Categoria {
 }
 
 const ListaCategorias = () => {
+  
   const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [vistaAgregar, setVistaAgregar] = useState(false);
 
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   useEffect(() => {
     const fetchCategorias = async () => {
       const data = await obtenerCategorias();
@@ -41,10 +48,87 @@ const ListaCategorias = () => {
     <div className='p-5'>
       <div className='flex'>
         <h1 className='text-3xl mr-2'>Listado de categorías</h1>
-        <Link href="/categorias/nueva" className='bg-blue-200 px-4 py-2 rounded-xl'>
+        <button  className='bg-blue-200 px-4 py-2 rounded-xl'
+        
+        onClick={() => setVistaAgregar(!vistaAgregar)}
+        >
           Agregar
-        </Link>
+
+        </button>
       </div>
+
+    { vistaAgregar && <div>
+      <form className="flex flex-col items-center justify-center" 
+        onSubmit={
+          handleSubmit(async (values ) => {
+            Swal.fire({
+              icon: 'warning',
+              title: '¿Estás seguro de que deseas editar la categoría?',
+              showCancelButton: true,
+              confirmButtonText: `Editar`,
+              cancelButtonText: `Cancelar`,
+              confirmButtonColor: '#22C55E',
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                console.log(values)
+                
+                values.edad_minima = Number(values.edad_minima)
+                values.edad_maxima = Number(values.edad_maxima)
+
+                // @ts-ignore
+                await crearCategoria(values);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Categoría agregada',
+                  showConfirmButton: false,
+                  timer: 1500
+                }).then(() => {
+                  window.location.reload();
+                })
+
+              }
+            })
+          }
+          )
+        }
+        >
+          <InputText
+            campo="Nombre"
+            type="text"
+            nombre="nombre"
+            register={register}
+            setValue={setValue}
+            errors={errors.nombre}
+            
+          />
+          <InputNumber
+            campo="Edad mínima"
+            nombre="edad_minima"
+            register={register}
+            setValue={setValue}
+            error={errors.edad_minima}
+            type="number"
+            maxLenght={3}
+          />
+          <InputNumber
+            campo="Edad máxima"
+            nombre="edad_maxima"
+            register={register}
+            setValue={setValue}
+            error={errors.edad_maxima}
+            type="number"
+            maxLenght={3}
+          />
+          <div className="flex flex-col items-center justify-center w-full">
+            <button className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded w-4/10 my-2">
+              Agregar
+            </button>
+            </div>
+            </form>
+      
+      </div>
+      }
+
 
       <DataTable
         columns={ColumnCategorias}
@@ -56,30 +140,12 @@ const ListaCategorias = () => {
         responsive={true}
         striped={true}
         highlightOnHover={true}
-        noDataComponent="No hay denuncias para mostrar"
+        noDataComponent="No hay categorías para mostrar"
         defaultSortFieldId={"Fecha"}
       // expandableIcon={expandableIcon}
       />
 
-      <ul className='mt-5 w-4/10'>
-        {categorias.map((categoria) => (
-          <li key={categoria.nombre} className='flex justify-between'>
-            {categoria.nombre} - Edad mínima: {categoria.edad_minima}, Edad máxima: {categoria.edad_maxima}
-
-            <div>
-              <Link href={`/categorias/editar/${categoria.nombre}`} className='text-blue-700'>
-                Editar
-              </Link>
-              <button
-                onClick={() => handleEliminar(categoria.nombre)}
-                className='text-red-700 ml-2'
-              >
-                Eliminar
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+    
     </div>
   );
 };
