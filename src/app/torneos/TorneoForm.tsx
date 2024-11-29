@@ -270,12 +270,12 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
             >
               Editar
             </button>
-            <button
+            <div
               onClick={() => handleEliminar(data?.nombre || "")}
-              className="mr-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-1/2 my-2"
+              className="mr-2 flex flex-row items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-1/2 my-2"
             >
               Eliminar
-            </button>
+            </div>
           </>
         )}
       </div>
