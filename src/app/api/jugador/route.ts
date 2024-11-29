@@ -73,3 +73,43 @@ export async function POST(req: Request, res: any) {
     return handleError("Error al crear el jugador");
   }
 }
+
+export async function PATCH(req: Request, res: any) {
+  try {
+    const {
+      dni_jugador_fk, // Identificador único del jugador
+      nro_equipo,
+      categoria_fk,
+      nro_socio,
+      foto,
+      es_responsable,
+    } = await req.json();
+
+    // Verifica que se haya proporcionado el identificador principal
+    if (!dni_jugador_fk) {
+      return NextResponse.json(
+        { error: "El dni_jugador_fk es obligatorio" },
+        { status: 400 }
+      );
+    }
+
+    console.log(req.body);
+
+    // Actualiza el jugador con los campos proporcionados
+    await prisma.$executeRaw`
+      UPDATE Jugador 
+      SET 
+        nro_equipo = ${nro_equipo},
+        categoria_fk = ${categoria_fk},
+        nro_socio = ${nro_socio},
+        foto = ${foto},
+        es_responsable = ${es_responsable}
+      WHERE dni_jugador_fk = ${dni_jugador_fk}
+    `;
+
+    return NextResponse.json({ message: "Jugador actualizado" });
+  } catch (error) {
+    console.error("Error al actualizar el jugador:", error);
+    return handleError("Error al actualizar el jugador");
+  }
+}

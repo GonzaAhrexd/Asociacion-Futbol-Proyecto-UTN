@@ -31,7 +31,8 @@
     "src/app/api/server.js",
     "src/app/api/controllers/categoriasControllers.js",
     "src/app/api/routes/routes.js",
-    "src/app/register/page.jsx"
+    "src/app/register/page.jsx",
+    "src/app/api/auth/[...nextauth]/route.js"
   ],
   "exclude": ["node_modules"]
 }
