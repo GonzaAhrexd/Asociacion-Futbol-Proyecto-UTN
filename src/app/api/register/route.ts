@@ -18,6 +18,11 @@ export async function POST(req: Request) {
     direccion_calle,
     direccion_altura,
     pass,
+    rol,
+    nro_socio,
+    foto,
+    nivel_exp,
+    tiene_cert,
   } = body;
   // Guardalo en Persona
 
@@ -27,8 +32,7 @@ export async function POST(req: Request) {
 
   const hashedPassword = await bcrypt.hash(pass, 10);
 
-  console.log(req.body)
-
+  console.log(req.body);
 
   const nuevaPersona = await prisma.persona.create({
     data: {
@@ -41,8 +45,57 @@ export async function POST(req: Request) {
     },
   });
 
+  function calcularEdad(fecha_nacimiento: Date): number {
+    const hoy = new Date(); // Fecha actual
+    const nacimiento = new Date(fecha_nacimiento); // Fecha de nacimiento
+
+    // Calcular la diferencia en años
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+
+    // Ajustar la edad si el cumpleaños aún no ha ocurrido este año
+    const mesActual = hoy.getMonth();
+    const diaActual = hoy.getDate();
+    const mesNacimiento = nacimiento.getMonth();
+    const diaNacimiento = nacimiento.getDate();
+
+    // Si aún no ha llegado el cumpleaños de este año, resta 1
+    if (
+      mesActual < mesNacimiento ||
+      (mesActual === mesNacimiento && diaActual < diaNacimiento)
+    ) {
+      edad--;
+    }
+
+    return edad;
+  }
+
+  const edadJugador = calcularEdad(fecha_nacimiento);
+  let categoriaJugador = "";
+
+  if (edadJugador >= 41 && edadJugador <= 45) {
+    categoriaJugador = "Maxi";
+  } else if (edadJugador >= 46 && edadJugador <= 50) {
+    categoriaJugador = "Súper";
+  } else if (edadJugador >= 51 && edadJugador <= 55) {
+    categoriaJugador = "Máster";
+  } else {
+    categoriaJugador = "Categoría no existente";
+  }
+
+  if (rol == "Jugador") {
+    const nuevoJugador = await prisma.jugador.create({
+      data: {
+        dni_jugador_fk: Number(dni),
+        nro_socio: nro_socio,
+        foto: foto,
+        categoria_fk: categoriaJugador,
+      },
+    });
+
+    return NextResponse.json({ nuevaPersona, nuevoJugador }, { status: 201 });
+  }
+
   return NextResponse.json(nuevaPersona, { status: 201 });
 
   // return NextResponse.json({ message: 'Datos recibidos', data: body });
 }
-
