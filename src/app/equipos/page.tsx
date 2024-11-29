@@ -9,7 +9,7 @@ import EquipoForm from "./EquipoForm";
 interface Equipo {
   nro_equipo?: number;
   nombre: string;
-  dni_dt_fk: number;
+  dni_dt_fk: bigint;
   categoria_fk: string;
   division: string;
 }

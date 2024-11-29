@@ -3,31 +3,20 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+
+// funcion común para manejar errores
 function handleError(message: string, status: number = 500) {
-  return NextResponse.json({ error: message }, { status });
+  NextResponse.json({ error: message }, { status });
 }
-
-/*
-model Equipo {
-  nro_equipo Int @id // PK
-  dni_dt_fk Int
-  categoria_fk String
-  nombre String
-  division String
-
-}
-
-*/
 
 export async function GET() {
   try {
-    // Realizar una consulta cruda para obtener todos los equipos
-    const equipos = await prisma.$queryRaw`SELECT * FROM Equipo`;
-
-    // Devolver los equipos como respuesta
+    const equipos = await prisma.equipo.findMany(); // Correct Prisma query
     return NextResponse.json(equipos);
-  } catch {
-    return handleError('Error al obtener los equipos');
+  } catch (error) {
+    console.error("Error fetching equipos:", error);
+    // Handle the error gracefully, perhaps returning a more informative error message
+    return new NextResponse("Error fetching data");
   }
 }
 
@@ -61,9 +50,6 @@ export async function PUT(req: Request) {
     // Extraer los datos del cuerpo
     const { nro_equipo,dni_dt_fk, categoria_fk, nombre, division } = body;
 
-  
-
-
     // Actualizar el equipo en la base de datos
     // const equipoActualizado = await prisma.$queryRaw`UPDATE Equipo SET dni_dt_fk = ${dni_dt_fk}, categoria_fk = ${categoria_fk}, nombre = ${nombre}, division = ${division} WHERE nro_equipo = ${nro_equipo}`;
 
@@ -72,7 +58,7 @@ export async function PUT(req: Request) {
       where: { nro_equipo },
       data: {
         nombre,
-        dni_dt_fk:Number(dni_dt_fk),
+        dni_dt_fk:BigInt(dni_dt_fk),
         categoria_fk: categoria_fk,
         division,
       },
@@ -84,28 +70,28 @@ export async function PUT(req: Request) {
       { status: 200 }
     );
 
-  } catch {
+  } catch (error){
     return handleError('Error al actualizar el equipo');
   }
 }
 
 
 
-export async function DELETE(req: Request) {
-  try{
+// export async function DELETE(req: Request) {
+//   try{
 
-    const { searchParams } = new URL(req.url);
-    const nombre = searchParams.get('nombre');
+//     const { searchParams } = new URL(req.url);
+//     const nombre = searchParams.get('nombre');
 
 
-    // Eliminar el equipo de la base de datos
-    const equipo = await prisma.$queryRaw`DELETE FROM Equipo WHERE nombre = ${nombre}`;
+//     // Eliminar el equipo de la base de datos
+//     const equipo = await prisma.$queryRaw`DELETE FROM Equipo WHERE nombre = ${nombre}`;
 
-    // Devolver el equipo eliminado
-    return NextResponse.json(equipo, { status: 201 });
+//     // Devolver el equipo eliminado
+//     return NextResponse.json(equipo, { status: 201 });
 
-  } catch (error) {
-    return NextResponse.json({ error });
-  }
-}
+//   } catch (error) {
+//     return NextResponse.json({ error });
+//   }
+// }
 

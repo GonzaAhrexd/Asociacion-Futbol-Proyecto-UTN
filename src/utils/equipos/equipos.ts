@@ -5,14 +5,19 @@ const baseUrl = '/api/equipos'; // Ajusta según tu ruta API
 interface Equipo {
     nro_equipo:number
     nombre: string;
-    dni_dt_fk: number;
+    dni_dt_fk: bigint;
     categoria_fk: string;
     division: string;
   }
 
 export const obtenerEquipos = async () => {
-  const response = await axios.get(baseUrl);
-  return response.data;
+  try{
+    const response = await axios.get(baseUrl);
+    return response.data;
+  }catch(error){
+    console.log(error);
+  }
+  
 };
 
 export const crearEquipo = async (equipo:Equipo) => {
