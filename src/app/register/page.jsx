@@ -3,12 +3,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import InputText from "../../components/Inputs/InputText";
 import Link from "next/link";
-import { registerUser } from "@/utils/register/register";
+// import { registerUser } from "@/utils/register/register";
 import { useState } from "react";
 import InputDate from "@/components/Inputs/InputDate";
 import Swal from "sweetalert2";
+import { signIn } from "next-auth/react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-function page() {
+export default function Page() {
   const {
     register,
     handleSubmit,
@@ -16,10 +19,116 @@ function page() {
     setValue,
   } = useForm();
 
+  const router = useRouter();
   const [rol, setRol] = useState("");
-  const [nivelExp, setNivelExp] = useState("Elige una opción");
+  ///////// codigo nuevo
 
+  function calcularEdad(fecha_nacimiento) {
+    const hoy = new Date(); // Fecha actual
+    const nacimiento = new Date(fecha_nacimiento); // Fecha de nacimiento
+
+    // Calcular la diferencia en años
+    let edad = hoy.getFullYear() - nacimiento.getFullYear();
+
+    // Ajustar la edad si el cumpleaños aún no ha ocurrido este año
+    const mesActual = hoy.getMonth();
+    const diaActual = hoy.getDate();
+    const mesNacimiento = nacimiento.getMonth();
+    const diaNacimiento = nacimiento.getDate();
+
+    // Si aún no ha llegado el cumpleaños de este año, resta 1
+    if (
+      mesActual < mesNacimiento ||
+      (mesActual === mesNacimiento && diaActual < diaNacimiento)
+    ) {
+      edad--;
+    }
+
+    return edad;
+  }
+
+  const crearJugador = async ({ dni, categoriaJugador, nro_socio }) => {
+    try {
+      // Envía los datos en formato JSON
+      const signupResponse = await axios.post("/api/jugador", {
+        dni_jugador_fk: dni,
+        categoria_fk: categoriaJugador,
+        nro_socio: nro_socio,
+        nro_equipo: null,
+        es_responsable: false,
+        foto: "foto",
+      });
+
+      console.log(signupResponse);
+    } catch (error) {
+      if (error.response) {
+        console.log(error);
+      }
+    }
+  };
+
+  const crearPersona = async (data) => {
+    try {
+      const edadJugador = calcularEdad(data.fecha_nacimiento);
+      let categoriaJugador = "";
+
+      if (edadJugador >= 41 && edadJugador <= 45) {
+        categoriaJugador = "Maxi";
+      } else if (edadJugador >= 46 && edadJugador <= 50) {
+        categoriaJugador = "Super";
+      } else if (edadJugador >= 51 && edadJugador <= 55) {
+        categoriaJugador = "Master";
+      } else {
+        categoriaJugador = "juvenil";
+      }
+
+      // Envía los datos en formato JSON
+      const signupResponse = await axios.post("/api/register", {
+        nombre: data.nombre,
+        apellido: data.apellido,
+        dni: data.dni,
+        fecha_nacimiento: data.fecha_nacimiento,
+        direccion_calle: data.direccion_calle,
+        direccion_altura: data.direccion_altura,
+        pass: data.pass,
+      });
+
+      console.log(signupResponse);
+
+      if (data.rol == "Jugador") {
+        crearJugador({
+          dni: data.dni,
+          categoriaJugador,
+          nro_socio: data.nro_socio,
+        });
+      } else if (data.rol == "Arbitro") {
+        crearArbitro();
+      }
+
+      const res = await signIn("credentials", {
+        dni: signupResponse.data.dni,
+        password: data.pass,
+        redirect: false,
+      });
+
+      if (res?.ok) return router.push("/");
+    } catch (error) {
+      if (error.response) {
+        console.log(error);
+      }
+    }
+  };
+
+
+
+
+
+  ///////// codigo nuevo
+
+
+  const [nivelExp, setNivelExp] = useState("Elige una opción");
   const [mensajeError, setMensajeError] = useState("");
+
   return (
     <div className="h-auto py-20 flex flex-col items-center justify-center">
       <div className="w-full md:w-3/10 h-screen md:h-8/10 flex flex-col items-center justify-center bg-gray-100 border shadow rounded-lg p-2">
@@ -27,31 +136,7 @@ function page() {
           {mensajeError}
         </span>
         <h1 className="text-4xl">Registro de usuario</h1>
-        <form
-          className="w-full p-2"
-          onSubmit={handleSubmit(async (data) => {
-            if (data.pass !== data.pass_repeat) {
-              // alert('Las contraseñas no coinciden')
-              setMensajeError("Las contraseñas no coinciden");
-              return;
-            } else {
-              setMensajeError("");
-            }
-            try {
-              await registerUser(data);
-              Swal.fire({
-                icon: "success",
-                title: "Usuario registrado",
-                showConfirmButton: true,
-                timer: 1500,
-              }).then(() => {
-                window.location.href = "/";
-              });
-            } catch (error) {
-              console.log(error);
-            }
-          })}
-        >
+        <form className="w-full p-2" onSubmit={handleSubmit(crearPersona)}>
           <div className="flex flex-row justify-evenly items-center gap-4">
             <InputText
               campo="Nombre"
@@ -73,12 +158,12 @@ function page() {
 
           <div className="flex flex-row justify-evenly items-center gap-4">
             <InputText
-              campo="DNI"
+              campo="dni"
               type="text"
               nombre="dni"
               register={register}
               require
-              errors={errors.DNI}
+              errors={errors.dni}
             />
             <InputDate
               campo="Fecha de nacimiento"
@@ -155,7 +240,7 @@ function page() {
               <InputText
                 campo="Número de socio"
                 type="text"
-                nombre="numero_socio"
+                nombre="nro_socio"
                 register={register}
                 require
                 errors={errors.numero_socio}
@@ -177,7 +262,7 @@ function page() {
             </div>
           )}
 
-          {rol === "Arbitro" && (
+          {/* {rol === "Arbitro" && (
             <div className="flex flex-col justify-evenly items-center gap-4 text-center">
               <label className="font-semibold">Nivel de experiencia</label>
               <select
@@ -203,7 +288,7 @@ function page() {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           <div className="flex items-center justify-center">
             <span>
@@ -224,5 +309,3 @@ function page() {
     </div>
   );
 }
-
-export default page;
