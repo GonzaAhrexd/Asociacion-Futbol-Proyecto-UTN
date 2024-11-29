@@ -25,8 +25,17 @@ export default function Home() {
       nombre: "Torneos",
       ruta: "/torneos",
     }
-
   ]
+  const seccionesLogout = [
+    {
+      nombre: "Iniciar Sesion",
+      ruta: "/login",
+    },
+    {
+      nombre: "Registrarse",
+      ruta: "/register",
+    }]
+
   return (
     
       <div className="flex flex-col items-center p-4">
@@ -38,7 +47,7 @@ export default function Home() {
             </>
           ) : (
             <>
-              <h1 className="ml-3 text-4xl m-auto">No estas logueado :(</h1>
+              <h1 className="ml-3 text-4xl m-auto">No estas logueado {':('}</h1>
             </>
           )}
         </div>
@@ -46,9 +55,17 @@ export default function Home() {
           className="text-3xl font-bold text-center text-neutral-900"
         >Secciones</h1>
         <div className='grid gap-1 grid-cols-1 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 w-full '>
-          {secciones.map((seccion) => (
+        
+
+        
+          {user ? secciones.map((seccion) => (
             <BotonSecciones seccion={seccion.nombre} ruta={seccion.ruta} />
-          ))}
+          ))
+          : seccionesLogout.map((seccion) => (
+            <BotonSecciones seccion={seccion.nombre} ruta={seccion.ruta} />
+          ))
+        }
+        
         </div>
       </div>
 

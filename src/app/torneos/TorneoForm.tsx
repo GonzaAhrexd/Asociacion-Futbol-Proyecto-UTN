@@ -3,23 +3,26 @@
 import React, { useState } from "react";
 import {
   crearTorneo, actualizarTorneo, eliminarTorneo
-  
+
 } from "../../utils/torneos/torneos";
 import { useForm } from "react-hook-form";
 import InputText from "@/components/Inputs/InputText";
 import { DateTime } from "next-auth/providers/kakao";
 import InputDate from "@/components/Inputs/InputDate";
 import Swal from "sweetalert2";
+import { useEffect } from "react";
+import { obtenerCategorias } from "../api/services/categorias";
+import SelectRegister from "@/components/Select/SelectRegisterSingle";
 
 interface Torneo {
-    nombre?:string;
-    categoria_fk?:string;
-    inscripciones_inicio?:DateTime;
-    inscripciones_fin?:DateTime;
-    inicio_torneo?:DateTime;
-    fin_torneo?:DateTime;
-    esta_habilitado?: number;
-    division?:string;
+  nombre?: string;
+  categoria_fk?: string;
+  inscripciones_inicio?: DateTime;
+  inscripciones_fin?: DateTime;
+  inicio_torneo?: DateTime;
+  fin_torneo?: DateTime;
+  esta_habilitado?: number;
+  division?: string;
 }
 
 interface TorneoFormProps {
@@ -29,18 +32,35 @@ interface TorneoFormProps {
 }
 
 export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps) {
-//   const { nombre = "", dni_dt_fk, categoria_fk, division } = data || {};
+  //   const { nombre = "", dni_dt_fk, categoria_fk, division } = data || {};
   const [accionCrear, setAccionCrear] = useState(creando);
   const [isChecked, setIsChecked] = useState(data ? (data.esta_habilitado == 1 ? true : false) : false);
-
+  const [listaCategoria, setListaCategoria] = useState<any[]>([]);
   // Manejar el cambio en el checkbox
   const handleCheckboxChange = (e: any) => {
     setIsChecked(e.target.checked);
   };
 
-//   const listaDnis = ["1345", "12345678", "66666666"];
+  //   const listaDnis = ["1345", "12345678", "66666666"];
   const listaDivisiones = ["A", "B", "C"];
-  const listaCategorias = ["juvenil", "Super", "Maxi"];
+  // const listaCategorias = ["juvenil", "Super", "Maxi"];
+
+  useEffect(() => {
+
+    const fetchCategorias = async () => {
+      const categorias = await obtenerCategorias();
+
+      console.log(categorias)
+
+      setListaCategoria(categorias);
+      setListaCategoria(categorias.map((categoria: any) => {
+        return { value: categoria.nombre, nombre: categoria.nombre }
+      }))
+
+    }
+    fetchCategorias();
+  })
+
 
   const {
     register,
@@ -78,7 +98,7 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
           }
         });
 
-      } 
+      }
       else {
         Swal.fire({
           title: "¿Estás seguro?",
@@ -98,7 +118,7 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
             console.log("Equipo actualizado");
           }
         });
-        
+
       }
     } catch (error) {
       console.error("Error al guardar el equipo:", error);
@@ -106,34 +126,34 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
   };
 
   const handleEliminar = async (nombre: string | undefined) => {
-   try{
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¿Deseas eliminar el torneo?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Sí",
-      cancelButtonText: "No",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        console.log(nombre)
-        await eliminarTorneo({nombre});
-        Swal.fire(
-          {
-            title: "Torneo eliminado",
-            icon: "success",
-            timer: 2000,
-            showConfirmButton: true,
-            confirmButtonColor: "#28a745",
-          }
-        ).then(
-          () => onUpdate() // Actualizar listado
-        );
-      }
-    })
-   }catch(error){
-     console.error("Error al eliminar el torneo:", error);
-   }
+    try {
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: "¿Deseas eliminar el torneo?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí",
+        cancelButtonText: "No",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          console.log(nombre)
+          await eliminarTorneo({ nombre });
+          Swal.fire(
+            {
+              title: "Torneo eliminado",
+              icon: "success",
+              timer: 2000,
+              showConfirmButton: true,
+              confirmButtonColor: "#28a745",
+            }
+          ).then(
+            () => onUpdate() // Actualizar listado
+          );
+        }
+      })
+    } catch (error) {
+      console.error("Error al eliminar el torneo:", error);
+    }
   }
 
   if (!data && !accionCrear) {
@@ -158,7 +178,7 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
         valor={data ? data.nombre : ""}
         require={false}
       />
-      <InputDate 
+      <InputDate
         campo="Fecha de inicio"
         nombre="inicio_torneo"
         register={register}
@@ -167,7 +187,7 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
         valor={data ? data.inicio_torneo : ""}
         require={false}
       />
-       <InputDate 
+      <InputDate
         campo="Fecha de finalización"
         nombre="fin_torneo"
         register={register}
@@ -176,79 +196,69 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
         valor={data ? data.fin_torneo : ""}
         require={false}
       />
-        <InputDate 
-          campo="Inicio de inscripciones"
-          nombre="inscripciones_inicio"
-          register={register}
-          setValue={setValue}
-          errors={errors.inicio_torneo}
-          valor={data ? data.inscripciones_inicio : ""}
-          require={false}
-        />
-        <InputDate 
-          campo="Fin de inscripciones"
-          nombre="inscripciones_fin"
-          register={register}
-          setValue={setValue}
-          errors={errors.inicio_torneo}
-          valor={data ? data.inscripciones_fin : ""}
-          require={false}
-        />
-    <div className="flex flex-row items-center">
-      <label 
-      className="block font-semibold py-2"
-      > Habilitado
-        <input
-        className="ml-2 
-        w-5 h-5" 
-          type="checkbox"
-          checked={isChecked}
-          onChange={handleCheckboxChange}
-          // @ts-ignore
-          value={data?.esta_habilitado == 1 ? true : false}
-        />
-      </label>
-    </div>
-  
+      <InputDate
+        campo="Inicio de inscripciones"
+        nombre="inscripciones_inicio"
+        register={register}
+        setValue={setValue}
+        errors={errors.inicio_torneo}
+        valor={data ? data.inscripciones_inicio : ""}
+        require={false}
+      />
+      <InputDate
+        campo="Fin de inscripciones"
+        nombre="inscripciones_fin"
+        register={register}
+        setValue={setValue}
+        errors={errors.inicio_torneo}
+        valor={data ? data.inscripciones_fin : ""}
+        require={false}
+      />
+      <div className="flex flex-row items-center">
+        <label
+          className="block font-semibold py-2"
+        > Habilitado
+          <input
+            className="ml-2 
+        w-5 h-5"
+            type="checkbox"
+            checked={isChecked}
+            onChange={handleCheckboxChange}
+            // @ts-ignore
+            value={data?.esta_habilitado == 1 ? true : false}
+          />
+        </label>
+      </div>
+
 
       <div className="mb-4 mt-2">
-        <label className="block font-semibold" htmlFor="division">
-          División
-        </label>
-        <select
-          id="division"
-          {...register("division", { required: "Seleccione una división" })}
-          className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm ${
-            errors.division ? "border-red-500" : ""
-          }`}
-        >
-          {listaDivisiones.map((division, index) => (
-            <option key={index} value={division}>
-              {division}
-            </option>
-          ))}
-        </select>
-        {/* @ts-ignore */}
-        {errors.division && <p className="text-red-500 text-xs italic">{errors.division.message}</p>}
+        <SelectRegister
+          campo="División"
+          nombre="division"
+          opciones={listaDivisiones.map((division) => {
+            return { value: division, nombre: division }
+          })}
+          setValue={setValue}
+          error={errors.division}
+          isRequired={true}
+          valor={data ? data.division : ""}
+          mid={true}
+        />
       </div>
 
       <div className="mt-2">
-        <label className="block font-semibold" htmlFor="categoria_fk">
-          Categoría
-        </label>
-        <select
-          id="categoria_fk"
-          {...register("categoria_fk", { required: "Seleccione una categoría" })}
-          className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm ${
-            errors.categoria_fk ? "border-red-500" : ""
-          }`}
-        >
-          {listaCategorias.map((categoria, index) => (
-            <option key={index} value={categoria}>
-              {categoria}
-            </option>
-          ))}
-        </select>
+        <SelectRegister
+
+          campo="Categoría"
+          nombre="categoria_fk"
+          opciones={listaCategoria}
+          setValue={setValue}
+          error={errors.division}
+          isRequired={true}
+          valor={data?.categoria_fk}
+          mid={true}
+        />
+
         {errors.categoria_fk && (
           // @ts-ignore
           <p className="text-red-500 text-xs italic">{errors.categoria_fk.message}</p>

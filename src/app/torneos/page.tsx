@@ -1,67 +1,169 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { obtenerTorneos } from "../../utils/torneos/torneos";
+import { obtenerTorneos, buscarTorneoPorCategoria } from "../../utils/torneos/torneos";
 import DataTable from "react-data-table-component";
 import columnTorneos from "./columnTorneos";
 import TorneoForm from "./TorneoForm";
 import { DateTime } from "next-auth/providers/kakao";
+import TorneoInscripcion from "./TorneoInscripcion/TorneoInscripcion";
+import SelectRegister from "@/components/Select/SelectRegisterSingle";
 
+import { obtenerCategorias } from "../api/services/categorias";
 
+import { useForm } from "react-hook-form";
 
 export default function ListaTorneo() {
   const [torneos, setTorneos] = useState([]);
   const [vistaAgregar, setVistaAgregar] = useState(false);
+  const [isUserEncargado, setIsUserEncargado] = useState(false);
+  const [listaCategoria, setListaCategoria] = useState([]);
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm(); 
+
+  // Cargar equipos al cargar el componente
   const fetchTorneos = async () => {
     const torneos = await obtenerTorneos();
     setTorneos(torneos);
     setVistaAgregar(false);
   };
-
-  // Cargar equipos al cargar el componente
   useEffect(() => {
-    fetchTorneos();
+
+    const fetchCategorias = async () => {
+      const categorias = await obtenerCategorias();
+
+      console.log(categorias)
+
+      setListaCategoria(categorias);
+      setListaCategoria(categorias.map((categoria: any) => {
+        return { value: categoria.nombre, nombre: categoria.nombre }
+      }))
+
+
+    };
+
+    fetchCategorias();
   }, []);
+
+  const handleSoyEncargado = () => {
+    setIsUserEncargado(true);
+    fetchTorneos()
+  }
+
+  const handleNoSoyEncargado = () => {
+    setIsUserEncargado(false);
+    setTorneos([])
+  
+  }
+
 
   return (
     <div>
-      <div className="flex p-4">
-        <h1 className="text-3xl mr-2">Listado de torneos</h1>
-        <button
-          className="bg-blue-200 px-4 py-2 rounded-xl"
-          onClick={() => setVistaAgregar(!vistaAgregar)}
-        >
-          Agregar
-        </button>
+      <div className="flex flex-row items-center justify-center">
+      <button
+        className="bg-green-500 px-4 py-2 rounded-xl"
+        onClick={() => handleSoyEncargado()}
+      >Soy Encargado</button>
+      <button
+      onClick={() => handleNoSoyEncargado()}
+        className="bg-green-500 px-4 py-2 rounded-xl"
+      >No soy encargado</button>
       </div>
+      {isUserEncargado ? <>
 
-      {vistaAgregar && (
-        <div className="flex items-center justify-center">
-          <TorneoForm
-            creando={true}
-            data={undefined}
-            onUpdate={fetchTorneos} // Actualiza la lista tras crear o modificar un equipo
-          />
+        <div className="flex p-4">
+          <h1 className="text-3xl mr-2">Listado de torneos</h1>
+          <button
+            className="bg-blue-200 px-4 py-2 rounded-xl"
+            onClick={() => setVistaAgregar(!vistaAgregar)}
+          >
+            Agregar
+          </button>
         </div>
-      )}
 
-      <DataTable
-        columns={columnTorneos}
-        data={torneos}
-        expandableRows
-        expandableRowsComponent={({ data }) => (
-          <TorneoForm
-            creando={false}
-            data={data}
-            onUpdate={fetchTorneos} // Actualiza la lista tras eliminar o editar un equipo
-          />
+        {vistaAgregar && (
+          <div className="flex items-center justify-center">
+            <TorneoForm
+              creando={true}
+              data={undefined}
+              onUpdate={fetchTorneos} // Actualiza la lista tras crear o modificar un equipo
+            />
+          </div>
         )}
-        responsive
-        striped
-        highlightOnHover
-        noDataComponent="No hay torneos para mostrar"
-      />
+
+        <DataTable
+          columns={columnTorneos}
+          data={torneos}
+          expandableRows
+          expandableRowsComponent={({ data }) => (
+            <TorneoForm
+              creando={false}
+              data={data}
+              onUpdate={fetchTorneos} // Actualiza la lista tras eliminar o editar un equipo
+            />
+          )}
+          responsive
+          striped
+          highlightOnHover
+          noDataComponent="No hay torneos para mostrar"
+        />
+
+      </>
+        :
+        <>
+          <div className="flex p-4">
+            <h1 className="text-3xl mr-2">Listado de torneos</h1>
+          </div>
+
+          <form
+            className="flex flex-col items-center justify-center"
+          action="" 
+            onSubmit={handleSubmit(async (data) => {
+
+              const torneos = await buscarTorneoPorCategoria(data)
+              setTorneos(torneos);
+
+            })
+            }
+          >
+
+            <SelectRegister
+
+              campo="Elija su categoría"
+              nombre="categoria"
+              opciones={listaCategoria}
+              setValue={setValue}
+              error={errors.categoria}
+              isRequired={true}
+              mid={false}
+            />
+            <button
+            className="bg-green-500 px-4 py-2 rounded-xl"
+            >Buscar</button>
+          </form>
+
+          <DataTable
+          columns={columnTorneos}
+          data={torneos}
+          expandableRows
+          expandableRowsComponent={({ data }) => (
+            <TorneoInscripcion
+              data={data}
+            />
+          )}
+          responsive
+          striped
+          highlightOnHover
+          noDataComponent="No hay torneos para mostrar"
+        />
+        </>
+
+      }
     </div>
   );
 }
