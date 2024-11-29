@@ -21,7 +21,6 @@ export default function Page() {
 
   const router = useRouter();
   const [rol, setRol] = useState("");
-  ///////// codigo nuevo
 
   function calcularEdad(fecha_nacimiento) {
     const hoy = new Date(); // Fecha actual
@@ -46,6 +45,26 @@ export default function Page() {
 
     return edad;
   }
+
+  const [check, setCheck] = useState("");
+
+  const crearArbitro = async ({ dni, nivel_xp }) => {
+    try {
+      // Envía los datos en formato JSON
+      console.log("booleano: " + check + "nivel de xp: " + nivel_xp)
+      const signupResponse = await axios.post("/api/arbitro", {
+        dni_arbitro_fk: dni,
+        nivel_experiencia: nivel_xp,
+        tiene_certificacion: check,
+      });
+
+      console.log(signupResponse);
+    } catch (error) {
+      if (error.response) {
+        console.log(error);
+      }
+    }
+  };
 
   const crearJugador = async ({ dni, categoriaJugador, nro_socio }) => {
     try {
@@ -102,7 +121,10 @@ export default function Page() {
           nro_socio: data.nro_socio,
         });
       } else if (data.rol == "Arbitro") {
-        crearArbitro();
+        crearArbitro({
+          dni: data.dni,
+          nivel_xp: data.nivel_xp,
+        });
       }
 
       const res = await signIn("credentials", {
@@ -119,14 +141,6 @@ export default function Page() {
     }
   };
 
-
-
-
-
-  ///////// codigo nuevo
-
-
-  const [nivelExp, setNivelExp] = useState("Elige una opción");
   const [mensajeError, setMensajeError] = useState("");
 
   return (
@@ -262,13 +276,13 @@ export default function Page() {
             </div>
           )}
 
-          {/* {rol === "Arbitro" && (
+          {rol === "Arbitro" && (
             <div className="flex flex-col justify-evenly items-center gap-4 text-center">
               <label className="font-semibold">Nivel de experiencia</label>
               <select
                 className="px-4 py-2"
                 defaultValue=""
-                {...register("nivelExp", {
+                {...register("nivel_xp", {
                   required: "El nivel es obligatorio",
                 })}
               >
@@ -283,12 +297,12 @@ export default function Page() {
                 <label className="font-semibold mr-2">Tengo certificado</label>
                 <input
                   type="checkbox"
-                  value="tiene_cert"
-                  {...register("tiene_cert")}
+                  onChange={(e) => setCheck(e.target.checked)}  // Cambiar de 'value' a 'checked'
                 />
+
               </div>
             </div>
-          )} */}
+          )}
 
           <div className="flex items-center justify-center">
             <span>

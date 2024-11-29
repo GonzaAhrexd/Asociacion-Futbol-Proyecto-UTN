@@ -34,9 +34,7 @@ model Jugador {
 */
 
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/libs/prisma";
 
 function handleError(message: string, status: number = 500) {
   return NextResponse.json({ error: message }, { status });
