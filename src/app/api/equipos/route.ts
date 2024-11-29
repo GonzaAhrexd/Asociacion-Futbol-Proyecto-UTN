@@ -97,6 +97,7 @@ export async function DELETE(req: Request) {
     const { searchParams } = new URL(req.url);
     const nombre = searchParams.get('nombre');
 
+
     // Eliminar el equipo de la base de datos
     const equipo = await prisma.$queryRaw`DELETE FROM Equipo WHERE nombre = ${nombre}`;
 
@@ -104,7 +105,7 @@ export async function DELETE(req: Request) {
     return NextResponse.json(equipo, { status: 201 });
 
   } catch (error) {
-    return handleError('Error al eliminar el equipo');
+    return NextResponse.json({ error });
   }
 }
 

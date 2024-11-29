@@ -43,10 +43,12 @@ export default function EquipoForm({ creando, data, onUpdate }: EquipoFormProps)
       if (accionCrear) {
         values.dni_dt_fk = Number(values.dni_dt_fk);
         await crearEquipo(values);
+        alert("Equipo creado");
         console.log("Equipo creado");
       } else {
         values.nro_equipo = data?.nro_equipo;
         await actualizarEquipo(values);
+        alert("Equipo actualizado");
         console.log("Equipo actualizado");
       }
       onUpdate(); // Actualizar listado
@@ -172,16 +174,16 @@ export default function EquipoForm({ creando, data, onUpdate }: EquipoFormProps)
           <>
             <button
               onClick={() => setAccionCrear(false)}
-              className="mr-2 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-1/2 my-2"
+              className="mr-2 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full my-2"
             >
               Editar
             </button>
-            <button
+            {/* <button
               onClick={() => handleEliminar(data?.nombre || "")}
               className="mr-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-1/2 my-2"
             >
               Eliminar
-            </button>
+            </button> */}
           </>
         )}
       </div>

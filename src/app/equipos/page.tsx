@@ -21,6 +21,7 @@ export default function ListaEquipos() {
   const fetchEquipos = async () => {
     const equipos = await obtenerEquipos();
     setEquipos(equipos);
+    setVistaAgregar(false);
   };
 
   // Cargar equipos al cargar el componente
