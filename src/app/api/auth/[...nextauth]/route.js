@@ -38,7 +38,8 @@ const authOptions = {
         return {
           id: userFound.dni,
           name: userFound.nombre,
-          dir: userFound.direccion,
+          // @ts-ignore
+          es_encargado: userFound.es_encargado == 1,
         };
       },
     }),

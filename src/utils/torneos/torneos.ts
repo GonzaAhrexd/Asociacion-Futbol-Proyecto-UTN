@@ -28,3 +28,23 @@ export const crearTorneo = async (torneo:Torneo) => {
     const response = await axios.post(baseUrl, torneo);
     return response.data;
   };
+
+  export const eliminarTorneo = async (torneo: any) => {
+    const response = await axios.delete(`${baseUrl}`, { data: torneo });
+    return response.data;
+  }
+
+  export const actualizarTorneo = async (torneo: any) => {
+    const response = await axios.put(`${baseUrl}`, torneo);
+    return response.data;
+  }
+
+  export const buscarTorneoPorCategoria = async (categoria: any) => {
+    const response = await axios.get(`${baseUrl}/${categoria.categoria}`);
+    return response.data;
+  }
+
+  export const inscribirTorneo = async (torneo: any) => {
+    const response = await axios.post(`/api/equipo_torneo`, torneo);
+    return response.data;
+  }

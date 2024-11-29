@@ -41,7 +41,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request, res: any) {
   try {
     // Realizar una consulta cruda para obtener todos los equipos
-    const { nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado } = await req.json();
+    const { nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado, division } = await req.json();
     // Devolver los equipos como respuesta
 
       // Haz que las fechas tengan este formato 2024-11-25T23:59:59.000Z
@@ -53,7 +53,7 @@ export async function POST(req: Request, res: any) {
 
     // Hazlo con una consulta SQL Cruda para subir los datos a la tabla Torneo
 
-    const torneo = await prisma.$queryRaw`INSERT INTO Torneo (nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado) VALUES (${nombre}, ${categoria_fk}, ${inicioInsc}, ${finInsc}, ${inicioTorneo}, ${finTorneo}, ${esta_habilitado})`;
+    const torneo = await prisma.$queryRaw`INSERT INTO Torneo (nombre, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado, division) VALUES (${nombre}, ${categoria_fk}, ${inicioInsc}, ${finInsc}, ${inicioTorneo}, ${finTorneo}, ${esta_habilitado}, ${division})`;
 
 
       return NextResponse.json("Torneo creado");
@@ -67,9 +67,22 @@ export async function POST(req: Request, res: any) {
     export async function PUT(req: Request, res: any) {
       try{
         // Obtener los datos del body
-        const { nombreOriginal, nombreNuevo, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado } = await req.json();
+        const body = await req.json();
+        
+        const { nombreOriginal, nombreNuevo, categoria_fk, inscripciones_inicio, inscripciones_fin, inicio_torneo, fin_torneo, esta_habilitado, division } = body;
+
+        console.log(body)
+        
+        
+        console.log()
         // Actualizar el torne
-        const torneo = await prisma.$queryRaw`UPDATE Torneo SET nombre = ${nombreNuevo}, categoria_fk = ${categoria_fk}, inscripciones_inicio = ${inscripciones_inicio}, inscripciones_fin = ${inscripciones_fin}, inicio_torneo = ${inicio_torneo}, fin_torneo = ${fin_torneo}, esta_habilitado = ${esta_habilitado} WHERE nombre = ${nombreOriginal}`;
+        const inicioInsc = new Date(inscripciones_inicio).toISOString();
+        const finInsc = new Date(inscripciones_fin).toISOString();
+        const inicioTorneo = new Date(inicio_torneo).toISOString();
+        const finTorneo = new Date(fin_torneo).toISOString();
+    
+
+        const torneo = await prisma.$queryRaw`UPDATE Torneo SET nombre = ${nombreNuevo}, categoria_fk = ${categoria_fk}, inscripciones_inicio = ${inicioInsc}, inscripciones_fin = ${finInsc}, inicio_torneo = ${inicioTorneo}, fin_torneo = ${finTorneo}, esta_habilitado = ${esta_habilitado}, division = ${division} WHERE nombre = ${nombreOriginal}`;
         // Devolver el torneo actualizado
         return NextResponse.json(torneo);
       }catch(error){
@@ -79,9 +92,10 @@ export async function POST(req: Request, res: any) {
 
     export async function DELETE(req: Request, res: any) {
       try{
+        
+        const body = await req.json();
         // Obtener el nombre del torneo a eliminar
-        const { nombre } = await req.json();
-    
+        const { nombre } = body;
         // Eliminar el torneo
         const torneo = await prisma.$queryRaw`DELETE FROM Torneo WHERE nombre = ${nombre}`;
         // Devolver el torneo eliminado

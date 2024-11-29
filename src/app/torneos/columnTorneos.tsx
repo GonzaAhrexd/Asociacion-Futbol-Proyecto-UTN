@@ -27,7 +27,7 @@ type Row = {
     inscripciones_fin:DateTime;
     inicio_torneo:DateTime;
     fin_torneo:DateTime;
-    esta_habilitado:boolean;
+    esta_habilitado: number;
     division:string;
 }
 
@@ -106,7 +106,7 @@ const columnTorneos = [
     },
     {
         name: "Esta habilitado",
-        selector: (row:Row) => row.esta_habilitado,
+        selector: (row:Row) => row.esta_habilitado == 0 ? "No" : "Si",
         sortable: true,
         style: {
             fontSize: '14px',

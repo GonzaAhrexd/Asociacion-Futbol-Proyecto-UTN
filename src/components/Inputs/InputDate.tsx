@@ -6,8 +6,8 @@ type InputDateProps = {
   placeholder?: string;
   nombre: string;
   register: any;
-  setValue?: (field: string, value: any) => void;
-  errors?: FieldError;
+  setValue: (field: string, value: any) => void;
+  errors: any;
   require?: boolean;
   valor?: string; // Valor inicial en formato de fecha (YYYY-MM-DD)
 };
@@ -30,8 +30,10 @@ export default function InputDate({
 
   return (
     <div className="flex flex-col w-full">
-      <label className="block font-semibold">{campo}</label>
-      {errors && <span className="mt-1 text-red-600">{errors.message}</span>}
+      <label className="block font-semibold">{campo} {valor} </label> 
+      {errors?.[nombre] && (
+        <span className="mt-1 text-red-600">{errors[nombre].message}</span>
+      )}
       <input
         type="date"
         className={`block text-black p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900`}
@@ -40,6 +42,7 @@ export default function InputDate({
           validate: (value: any) =>
             value ? true : `Debe seleccionar una fecha válida para ${campo}`,
         })}
+        defaultValue={valor || ""} // Establecer el valor inicial del input
         placeholder={placeholder || ""}
       />
     </div>
