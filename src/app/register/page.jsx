@@ -20,9 +20,8 @@ export default function Page() {
   } = useForm();
 
   const router = useRouter();
-
+  const [rol, setRol] = useState("");
   ///////// codigo nuevo
-  const [fechaN, setFechaN] = useState("");
 
   function calcularEdad(fecha_nacimiento) {
     const hoy = new Date(); // Fecha actual
@@ -48,41 +47,19 @@ export default function Page() {
     return edad;
   }
 
-  const edadJugador = calcularEdad(fechaN);
-  let categoriaJugador = "";
-
-  if (edadJugador >= 41 && edadJugador <= 45) {
-    categoriaJugador = "Maxi";
-  } else if (edadJugador >= 46 && edadJugador <= 50) {
-    categoriaJugador = "Super";
-  } else if (edadJugador >= 51 && edadJugador <= 55) {
-    categoriaJugador = "Master";
-  } else {
-    categoriaJugador = "juvenil";
-  }
-
-  const crearJugador = async (data) => {
+  const crearJugador = async ({ dni, categoriaJugador, nro_socio }) => {
     try {
       // Envía los datos en formato JSON
       const signupResponse = await axios.post("/api/jugador", {
-        dni_jugador_fk: data.dni,
+        dni_jugador_fk: dni,
         categoria_fk: categoriaJugador,
-        nro_socio: data.nro_socio,
+        nro_socio: nro_socio,
+        nro_equipo: null,
+        es_responsable: false,
         foto: "foto",
       });
 
       console.log(signupResponse);
-
-      const res = await signIn("credentials", {
-        dni: signupResponse.data.dni,
-        password: data.pass,
-        redirect: false,
-      });
-
-      if (res?.ok) return router.push("/");
-
-      console.log(res);
-      // Maneja la respuesta si es necesario
     } catch (error) {
       if (error.response) {
         console.log(error);
@@ -92,6 +69,19 @@ export default function Page() {
 
   const crearPersona = async (data) => {
     try {
+      const edadJugador = calcularEdad(data.fecha_nacimiento);
+      let categoriaJugador = "";
+
+      if (edadJugador >= 41 && edadJugador <= 45) {
+        categoriaJugador = "Maxi";
+      } else if (edadJugador >= 46 && edadJugador <= 50) {
+        categoriaJugador = "Super";
+      } else if (edadJugador >= 51 && edadJugador <= 55) {
+        categoriaJugador = "Master";
+      } else {
+        categoriaJugador = "juvenil";
+      }
+
       // Envía los datos en formato JSON
       const signupResponse = await axios.post("/api/register", {
         nombre: data.nombre,
@@ -105,21 +95,23 @@ export default function Page() {
 
       console.log(signupResponse);
 
-      // const res = await signIn("credentials", {
-      //   dni: signupResponse.data.dni,
-      //   password: data.pass,
-      //   redirect: false,
-      // });
-
-      // if (res?.ok) return router.push("/");
-
-      // console.log(res);
-      // Maneja la respuesta si es necesario
       if (data.rol == "Jugador") {
-        crearJugador()
+        crearJugador({
+          dni: data.dni,
+          categoriaJugador,
+          nro_socio: data.nro_socio,
+        });
       } else if (data.rol == "Arbitro") {
-        crearArbitro()
+        crearArbitro();
       }
+
+      const res = await signIn("credentials", {
+        dni: signupResponse.data.dni,
+        password: data.pass,
+        redirect: false,
+      });
+
+      if (res?.ok) return router.push("/");
     } catch (error) {
       if (error.response) {
         console.log(error);
@@ -130,9 +122,10 @@ export default function Page() {
 
 
 
+
   ///////// codigo nuevo
 
-  const [rol, setRol] = useState("");
+
   const [nivelExp, setNivelExp] = useState("Elige una opción");
   const [mensajeError, setMensajeError] = useState("");
 
@@ -178,7 +171,6 @@ export default function Page() {
               placeholder="Selecciona una fecha"
               register={register}
               setValue={setValue}
-              onChange={(e) => setFechaN(e.target.value)}
               require={true}
             />
           </div>
