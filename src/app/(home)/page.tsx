@@ -9,17 +9,22 @@ export default function Home() {
   const user = session?.user;
   return (
     <div>
-      <div className="flex flex-col w-fit">
-        {user ? (
-          <>
-            <p className="ml-3">Bienvenido, {user.name}!</p>
-          </>
-        ) : (
-          <>
-            <p>no logueao :(</p>
-          </>
-        )}
-        <h1>Aca podriamos poner un panel de admin o algo asi</h1>
+      <div className="flex flex-col items-center">
+
+        <div className="my-8">
+          {user ? (
+            <>
+              <h1 className="ml-3 text-4xl m-auto">Bienvenido, {user.name}!</h1>
+            </>
+          ) : (
+            <>
+              <h1 className="ml-3 text-4xl m-auto">No estas logueado :(</h1>
+            </>
+          )}
+        </div>
+
+        
+
         <Link href="/" className={botonGris300}>
           Canchas
         </Link>

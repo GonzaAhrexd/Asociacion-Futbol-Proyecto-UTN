@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+
+import prisma from "@/libs/prisma"; // Importa el cliente de Prisma configurado
 
 // export async function GET() {
 //   return NextResponse.json({ message: 'Respuesta a GET' });

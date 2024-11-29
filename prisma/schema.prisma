@@ -123,6 +123,7 @@ model EquipoTorneo {
 model Torneo {
   nombre String @id // PK
   categoria_fk String
+  division String @default("A")
   inscripciones_inicio DateTime
   inscripciones_fin DateTime
   inicio_torneo DateTime
