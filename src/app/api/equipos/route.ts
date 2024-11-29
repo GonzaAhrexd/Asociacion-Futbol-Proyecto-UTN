@@ -26,7 +26,7 @@ export async function GET() {
 
     // Devolver los equipos como respuesta
     return NextResponse.json(equipos);
-  } catch (error) {
+  } catch {
     return handleError('Error al obtener los equipos');
   }
 }
@@ -84,7 +84,7 @@ export async function PUT(req: Request) {
       { status: 200 }
     );
 
-  } catch (error) {
+  } catch {
     return handleError('Error al actualizar el equipo');
   }
 }

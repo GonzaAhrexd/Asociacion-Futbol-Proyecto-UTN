@@ -18,7 +18,7 @@ model Categoria {
 }
 
 model Persona {
-  dni Int @id // PK
+  dni BigInt @id // PK
   nombre String
   fecha_nacimiento DateTime
   direccion String @default("sin direccion")
@@ -32,7 +32,7 @@ model Persona {
 }
 
 model Jugador {
-  dni_jugador_fk Int @id // PK y FK
+  dni_jugador_fk BigInt @id // PK y FK
   nro_equipo Int?
   categoria_fk String
   nro_socio Int 
@@ -46,7 +46,7 @@ model Jugador {
 }
 
 model DirectorTecnico {
-  dni_dt_fk Int @id // PK y FK
+  dni_dt_fk BigInt @id // PK y FK
   nivel_experiencia String
   estilo String
 
@@ -55,7 +55,7 @@ model DirectorTecnico {
 }
 
 model Arbitro {
-  dni_arbitro_fk Int @id // PK y FK
+  dni_arbitro_fk BigInt @id // PK y FK
   nivel_experiencia String
   tiene_certificacion Boolean
 
@@ -65,7 +65,7 @@ model Arbitro {
 
 model Equipo {
   nro_equipo Int @id // PK
-  dni_dt_fk Int
+  dni_dt_fk BigInt
   categoria_fk String 
   nombre String
   division String
@@ -92,7 +92,7 @@ model EquipoPartido {
 model Partido {
   nro_partido Int @id // PK
   codigo_fecha_fk Int
-  dni_arbitro_fk Int
+  dni_arbitro_fk BigInt
   cancha_fk String
   fecha_hora DateTime
 
@@ -173,7 +173,7 @@ model RuedaFecha {
 }
 
 model JugadorPartido {
-  dni_jugador_fk Int
+  dni_jugador_fk BigInt
   nro_partido_fk Int
   cant_faltas Int
   cant_goles Int

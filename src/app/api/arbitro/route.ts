@@ -16,7 +16,6 @@ model Arbitro {
   persona Persona @relation(fields: [dni_arbitro_fk], references: [dni])
   partidos Partido[]
 }
-
 */
 
 export const GET = async () => {
