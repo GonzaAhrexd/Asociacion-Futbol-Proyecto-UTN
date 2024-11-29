@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
+import prisma from "@/libs/prisma"; // Importa el cliente de Prisma configurado
 
 // funcion común para manejar errores
 function handleError(message: string, status: number = 500) {
@@ -11,12 +8,19 @@ function handleError(message: string, status: number = 500) {
 
 export async function GET() {
   try {
-    const equipos = await prisma.equipo.findMany(); // Correct Prisma query
-    return NextResponse.json(equipos);
+    // Realiza la consulta a la base de datos
+    const equipos = await prisma.equipo.findMany();
+
+    // Devuelve los datos serializados
+    return NextResponse.json(equipos, { status: 200 });
   } catch (error) {
     console.error("Error fetching equipos:", error);
-    // Handle the error gracefully, perhaps returning a more informative error message
-    return new NextResponse("Error fetching data");
+
+    // Devuelve un mensaje de error más detallado
+    return NextResponse.json(
+      { message: "Error fetching equipos", error: error.message },
+      { status: 500 }
+    );
   }
 }
 
