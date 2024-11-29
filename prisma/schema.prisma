@@ -165,7 +165,7 @@ model Fecha {
 
 model RuedaFecha {
   codigo_rueda_fk Int
-  codigo_fecha_fk Int
+  codigo_fecha_fk Int 
 
   fecha Fecha @relation(fields: [codigo_fecha_fk], references: [codigo_fecha])
   rueda Rueda @relation(fields: [codigo_rueda_fk], references: [codigo_rueda])
