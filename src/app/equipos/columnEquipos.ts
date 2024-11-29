@@ -8,22 +8,10 @@
 ----------------------------------------------------------------------------------------------------------
 */
 
-// model Equipo {
-//     nro_equipo Int @id // PK
-//     dni_dt_fk Int
-//     categoria_fk String 
-//     nombre String
-//     division String
-    
-//     categoria Categoria @relation(fields: [categoria_fk], references: [nombre])
-//     directorTecnico DirectorTecnico @relation(fields: [dni_dt_fk], references: [dni_dt_fk])
-//     jugadores Jugador[]
-//     torneos   EquipoTorneo[]
-//     partidos  EquipoPartido[]
-// }
+
 
 type Row = {
-    dni_dt_fk: number;
+    dni_dt_fk: bigint;
     categoria_fk: string;
     nombre: string;
     division: string;

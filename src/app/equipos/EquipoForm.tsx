@@ -83,7 +83,7 @@ export default function EquipoForm({ creando, data, onUpdate }: EquipoFormProps)
 
   return (
     <form
-      className="flex flex-col p-5 bg-gray-100 shadow m-2 w-[400px] mx-auto m-2"
+      className="flex flex-col p-5 bg-gray-100 shadow m-2 w-[400px] mx-auto"
       onSubmit={handleSubmit(onSubmit)}
     >
       <h1 className="text-xl m-auto my-3">{accionCrear ? "Nuevo Equipo" : "Editar Equipo"}</h1>
