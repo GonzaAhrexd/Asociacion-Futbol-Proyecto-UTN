@@ -64,19 +64,21 @@ export default function ListaTorneo() {
 
   return (
     <div>
-      <div className="flex flex-row items-center justify-center">
-      <button
-        className="bg-green-500 px-4 py-2 rounded-xl"
-        onClick={() => handleSoyEncargado()}
-      >Soy Encargado</button>
-      <button
-      onClick={() => handleNoSoyEncargado()}
-        className="bg-green-500 px-4 py-2 rounded-xl"
-      >No soy encargado</button>
-      </div>
+      <div className="flex flex-row items-center justify-center p-8">
+
+        <button
+            className="bg-blue-500 px-4 py-2 rounded-xl m-5 text-white"
+            onClick={() => handleSoyEncargado()}
+        >Soy Encargado</button>
+        <button
+        onClick={() => handleNoSoyEncargado()}
+            className="bg-blue-500 px-4 py-2 rounded-xl m-5 text-white"
+        >No soy encargado</button>
+        </div>
+
       {isUserEncargado ? <>
 
-        <div className="flex p-4">
+        <div className="flex p-4 ml-5">
           <h1 className="text-3xl mr-2">Listado de torneos</h1>
           <button
             className="bg-blue-200 px-4 py-2 rounded-xl"
@@ -117,7 +119,7 @@ export default function ListaTorneo() {
         :
         <>
           <div className="flex p-4">
-            <h1 className="text-3xl mr-2">Listado de torneos</h1>
+            <h1 className="text-3xl m-auto">Listado de torneos</h1>
           </div>
 
           <form
@@ -143,7 +145,7 @@ export default function ListaTorneo() {
               mid={false}
             />
             <button
-            className="bg-green-500 px-4 py-2 rounded-xl"
+            className="bg-green-500 px-4 py-2 rounded-xl my-5 text-white font-semibold"
             >Buscar</button>
           </form>
 
