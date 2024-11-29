@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -91,12 +92,12 @@ model EquipoPartido {
 
 model Partido {
   nro_partido Int @id // PK
-  nro_fecha_fk Int
+  codigo_fecha_fk Int
   dni_arbitro_fk Int
   cancha_fk String
   fecha_hora DateTime
 
-  fecha   Fecha   @relation(fields: [nro_fecha_fk], references: [nro_fecha])
+  fecha   Fecha   @relation(fields: [codigo_fecha_fk], references: [codigo_fecha])
   arbitro Arbitro @relation(fields: [dni_arbitro_fk], references: [dni_arbitro_fk])
   cancha  Cancha  @relation(fields: [cancha_fk], references: [nombre])
   equipos EquipoPartido[]
@@ -144,30 +145,32 @@ model Fixture {
 }
 
 model Rueda {
-  nro_rueda Int @id // PK
+  codigo_rueda Int @id // PK
   nro_fixture_fk Int
   cant_fechas Int
+  nro_rueda Int @default(0) // valor por defecto
 
   fixture Fixture @relation(fields: [nro_fixture_fk], references: [nro_fixture])
   fechas RuedaFecha[]
 }
 
 model Fecha {
-  nro_fecha Int @id // PK
+  codigo_fecha Int @id // PK
   cant_partidos Int
+  nro_fecha_rueda Int @default(0) // valor por defecto
 
   ruedas RuedaFecha[]
   partidos Partido[]
 }
 
 model RuedaFecha {
-  nro_rueda_fk Int
-  nro_fecha_fk Int
+  codigo_rueda_fk Int
+  codigo_fecha_fk Int
 
-  fecha Fecha @relation(fields: [nro_fecha_fk], references: [nro_fecha])
-  rueda Rueda @relation(fields: [nro_rueda_fk], references: [nro_rueda])
+  fecha Fecha @relation(fields: [codigo_fecha_fk], references: [codigo_fecha])
+  rueda Rueda @relation(fields: [codigo_rueda_fk], references: [codigo_rueda])
 
-  @@id([nro_rueda_fk, nro_fecha_fk])
+  @@id([codigo_rueda_fk, codigo_fecha_fk])
 }
 
 model JugadorPartido {
