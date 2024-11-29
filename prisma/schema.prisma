@@ -35,7 +35,7 @@ model Jugador {
   dni_jugador_fk Int @id // PK y FK
   nro_equipo Int
   categoria_fk String
-  nro_socio Int
+  nro_socio Int 
   foto String
   es_responsable Boolean @default(false)
 

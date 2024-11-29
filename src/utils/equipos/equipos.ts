@@ -3,9 +3,10 @@ import axios from 'axios';
 const baseUrl = '/api/equipos'; // Ajusta según tu ruta API
 
 interface Equipo {
+    nro_equipo:number
     nombre: string;
     dni_dt_fk: number;
-    categoria_fk: number;
+    categoria_fk: string;
     division: string;
   }
 
