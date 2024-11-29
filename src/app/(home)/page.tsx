@@ -16,11 +16,20 @@ export default function Home() {
     {
       nombre: "Categorias",
       ruta: "/categorias",
+    },
+    {
+      nombre: "Equipos",
+      ruta: "/equipos",
+    },
+    {
+      nombre: "Torneos",
+      ruta: "/torneos",
     }
+
   ]
   return (
-    <div>
-      <div className="flex flex-col items-center">
+    
+      <div className="flex flex-col items-center p-4">
 
         <div className="my-8">
           {user ? (
@@ -42,6 +51,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-    </div>
+
   );
 }

@@ -28,3 +28,13 @@ export const crearTorneo = async (torneo:Torneo) => {
     const response = await axios.post(baseUrl, torneo);
     return response.data;
   };
+
+  export const eliminarTorneo = async (torneo: any) => {
+    const response = await axios.delete(`${baseUrl}`, { data: torneo });
+    return response.data;
+  }
+
+  export const actualizarTorneo = async (torneo: any) => {
+    const response = await axios.put(`${baseUrl}`, torneo);
+    return response.data;
+  }

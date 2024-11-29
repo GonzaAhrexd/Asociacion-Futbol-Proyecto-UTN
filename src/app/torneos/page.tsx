@@ -7,20 +7,10 @@ import columnTorneos from "./columnTorneos";
 import TorneoForm from "./TorneoForm";
 import { DateTime } from "next-auth/providers/kakao";
 
-interface Torneo {
-    nombre?:string;
-    categoria_fk?:string;
-    inscripciones_inicio?:DateTime;
-    inscripciones_fin?:DateTime;
-    inicio_torneo?:DateTime;
-    fin_torneo?:DateTime;
-    esta_habilitado?:boolean;
-    division?:string;
-}
 
 
 export default function ListaTorneo() {
-  const [torneos, setTorneos] = useState<Torneo[]>([]);
+  const [torneos, setTorneos] = useState([]);
   const [vistaAgregar, setVistaAgregar] = useState(false);
 
   const fetchTorneos = async () => {

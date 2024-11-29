@@ -2,12 +2,14 @@
 
 import React, { useState } from "react";
 import {
-  crearTorneo,
+  crearTorneo, actualizarTorneo, eliminarTorneo
   
 } from "../../utils/torneos/torneos";
 import { useForm } from "react-hook-form";
 import InputText from "@/components/Inputs/InputText";
 import { DateTime } from "next-auth/providers/kakao";
+import InputDate from "@/components/Inputs/InputDate";
+import Swal from "sweetalert2";
 
 interface Torneo {
     nombre?:string;
@@ -16,7 +18,7 @@ interface Torneo {
     inscripciones_fin?:DateTime;
     inicio_torneo?:DateTime;
     fin_torneo?:DateTime;
-    esta_habilitado?:boolean;
+    esta_habilitado?: number;
     division?:string;
 }
 
@@ -29,10 +31,10 @@ interface TorneoFormProps {
 export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps) {
 //   const { nombre = "", dni_dt_fk, categoria_fk, division } = data || {};
   const [accionCrear, setAccionCrear] = useState(creando);
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(data ? (data.esta_habilitado == 1 ? true : false) : false);
 
   // Manejar el cambio en el checkbox
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e: any) => {
     setIsChecked(e.target.checked);
   };
 
@@ -50,42 +52,89 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
   const onSubmit = async (values: any) => {
     try {
       if (accionCrear) {
-        console.log(values);
-        await crearTorneo(values);
-        alert("torneo creado");
-        console.log("torneo creado");
+
+        Swal.fire({
+          title: "¿Estás seguro?",
+          text: "¿Deseas crear el torneo?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Sí",
+          cancelButtonText: "No",
+        }).then(async (result) => {
+          values.esta_habilitado = isChecked;
+          await crearTorneo(values);
+          if (result.isConfirmed) {
+            Swal.fire(
+              {
+                title: "Torneo creado",
+                icon: "success",
+                timer: 2000,
+                showConfirmButton: true,
+                confirmButtonColor: "#28a745",
+              }
+            ).then(
+              () => onUpdate() // Actualizar listado
+            );
+          }
+        });
+
       } 
-    //   else {
-    //     values.nro_equipo = data?.nro_equipo;
-    //     await actualizarEquipo(values);
-    //     alert("Equipo actualizado");
-    //     console.log("Equipo actualizado");
-    //   }
-      onUpdate(); // Actualizar listado
+      else {
+        Swal.fire({
+          title: "¿Estás seguro?",
+          text: "¿Deseas editar el torneo?",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonText: "Sí",
+          cancelButtonText: "No",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            values.nombreOriginal = data?.nombre;
+            values.nombreNuevo = values.nombre;
+            values.esta_habilitado = isChecked;
+            console.log(values)
+            await actualizarTorneo(values);
+            alert("Equipo actualizado");
+            console.log("Equipo actualizado");
+          }
+        });
+        
+      }
     } catch (error) {
       console.error("Error al guardar el equipo:", error);
     }
   };
 
-//   const handleEliminar = async (nombre: string | undefined) => {
-//     if (!nombre) {
-//       alert("Error: No se puede eliminar un equipo sin nombre.");
-//       return;
-//     }
-
-//     const confirmacion = confirm(`¿Deseas eliminar el equipo "${nombre}"?`);
-//     if (!confirmacion) return;
-
-//     try {
-//       await eliminarEquipo(nombre);
-//       console.log(`Equipo "${nombre}" eliminado correctamente.`);
-//       alert(`Equipo "${nombre}" eliminado correctamente.`);
-//       onUpdate(); // Actualizar listado
-//     } catch (error) {
-//       console.error(`Error al eliminar el equipo "${nombre}":`, error);
-//       alert(`Error al eliminar el equipo "${nombre}".`);
-//     }
-//   };
+  const handleEliminar = async (nombre: string | undefined) => {
+   try{
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: "¿Deseas eliminar el torneo?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        console.log(nombre)
+        await eliminarTorneo({nombre});
+        Swal.fire(
+          {
+            title: "Torneo eliminado",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: true,
+            confirmButtonColor: "#28a745",
+          }
+        ).then(
+          () => onUpdate() // Actualizar listado
+        );
+      }
+    })
+   }catch(error){
+     console.error("Error al eliminar el torneo:", error);
+   }
+  }
 
   if (!data && !accionCrear) {
     return <p>Los datos del equipo no están disponibles.</p>;
@@ -107,53 +156,56 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
         setValue={setValue}
         errors={errors.nombre}
         valor={data ? data.nombre : ""}
-        require
+        require={false}
       />
-
-    <div>
-      <label htmlFor="fecha">Selecciona una fecha:</label>
-      <input
-        type="date"
-        id="fecha"
-        name="fecha"
-        value={data?.inicio_torneo}
+      <InputDate 
+        campo="Fecha de inicio"
+        nombre="inicio_torneo"
+        register={register}
+        setValue={setValue}
+        errors={errors.inicio_torneo}
+        valor={data ? data.inicio_torneo : ""}
+        require={false}
       />
-    </div>
-    <div>
-      <label htmlFor="fecha">Selecciona una fecha:</label>
-      <input
-        type="date"
-        id="fecha"
-        name="fecha"
-        value={data?.fin_torneo}
+       <InputDate 
+        campo="Fecha de finalización"
+        nombre="fin_torneo"
+        register={register}
+        setValue={setValue}
+        errors={errors.inicio_torneo}
+        valor={data ? data.fin_torneo : ""}
+        require={false}
       />
-    </div>
-    <div>
-      <label htmlFor="fecha">Selecciona una fecha:</label>
-      <input
-        type="date"
-        id="fecha"
-        name="fecha"
-        value={data?.inscripciones_inicio}
-      />
-    </div>
-    <div>
-      <label htmlFor="fecha">Selecciona una fecha:</label>
-      <input
-        type="date"
-        id="fecha"
-        name="fecha"
-        value={data?.inscripciones_fin}
-      />
-    </div>
-
-    <div>
-      <label>
+        <InputDate 
+          campo="Inicio de inscripciones"
+          nombre="inscripciones_inicio"
+          register={register}
+          setValue={setValue}
+          errors={errors.inicio_torneo}
+          valor={data ? data.inscripciones_inicio : ""}
+          require={false}
+        />
+        <InputDate 
+          campo="Fin de inscripciones"
+          nombre="inscripciones_fin"
+          register={register}
+          setValue={setValue}
+          errors={errors.inicio_torneo}
+          valor={data ? data.inscripciones_fin : ""}
+          require={false}
+        />
+    <div className="flex flex-row items-center">
+      <label 
+      className="block font-semibold py-2"
+      > Habilitado
         <input
+        className="ml-2 
+        w-5 h-5" 
           type="checkbox"
           checked={isChecked}
           onChange={handleCheckboxChange}
-          value={data?.esta_habilitado}
+          // @ts-ignore
+          value={data?.esta_habilitado == 1 ? true : false}
         />
       </label>
     </div>
@@ -176,6 +228,7 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
             </option>
           ))}
         </select>
+        {/* @ts-ignore */}
         {errors.division && <p className="text-red-500 text-xs italic">{errors.division.message}</p>}
       </div>
 
@@ -197,18 +250,10 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
           ))}
         </select>
         {errors.categoria_fk && (
+          // @ts-ignore
           <p className="text-red-500 text-xs italic">{errors.categoria_fk.message}</p>
         )}
       </div>
-
-        
-
-        
-
-
-
-
-
       <div className="flex">
         {accionCrear ? (
           <button
@@ -219,18 +264,18 @@ export default function TorneoForm({ creando, data, onUpdate }: TorneoFormProps)
           </button>
         ) : (
           <>
-            {/* <button
+            <button
               onClick={() => setAccionCrear(false)}
               className="mr-2 bg-blue-400 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full my-2"
             >
               Editar
-            </button> */}
-            {/* <button
+            </button>
+            <button
               onClick={() => handleEliminar(data?.nombre || "")}
               className="mr-2 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-1/2 my-2"
             >
               Eliminar
-            </button> */}
+            </button>
           </>
         )}
       </div>
