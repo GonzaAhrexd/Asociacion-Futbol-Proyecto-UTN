@@ -82,15 +82,15 @@ export default function ListaEquipos(){
                         id="dni_dt_fk"
                         {...register("dni_dt_fk", { required: "Seleccione un dni de DT" })}
                         className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900 ${
-                          errors.dni_dt ? 'mt-1 text-red-600' : ''
+                          errors.dni_dt_fk ? 'mt-1 text-red-600' : ''
                         }`}
                       >
-                        <option value="444444">444444</option>
-                        <option value="555555">555555</option>
-                        <option value="666666">666666</option>
+                        <option value="1345">1345</option>
+                        <option value="12345678">12345678</option>
+                        <option value="66666666">66666666</option>
                       </select>
-                      {errors.dni_dt && (
-                        <p className="text-red-500 text-xs italic">{errors.dni_dt.message}</p>
+                      {errors.dni_dt_fk && (
+                        <p className="text-red-500 text-xs italic">{errors.dni_dt_fk.message}</p>
                       )}
                     </div>
                     
@@ -117,22 +117,22 @@ export default function ListaEquipos(){
 
                     {/* Select para elegir la división */}
                     <div className="mt-2">
-                        <label className="block font-semibold" htmlFor="categoria">
+                        <label className="block font-semibold" htmlFor="categoria_fk">
                           Categoria
                         </label>
                         <select
-                          id="categoria"
-                          {...register("categoria", { required: "Seleccione una categoria" })}
+                          id="categoria_fk"
+                          {...register("categoria_fk", { required: "Seleccione una categoria" })}
                           className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900  ${
-                            errors.categoria ? 'border-red-500' : ''
+                            errors.categoria_fk ? 'border-red-500' : ''
                           }`}
                         >
-                          <option value="Juvenil">Juvenil</option>
-                          <option value="Mayores">Mayores</option>
-                          <option value="Jubilados">Jubilados</option>
+                          <option value="juvenil">juvenil</option>
+                          <option value="Maxi">Maxi</option>
+                          <option value="Super">Super</option>
                         </select>
-                        {errors.categoria && (
-                          <p className="text-red-500 text-xs italic">{errors.categoria.message}</p>
+                        {errors.categoria_fk && (
+                          <p className="text-red-500 text-xs italic">{errors.categoria_fk.message}</p>
                         )}
                     </div>
 
@@ -156,14 +156,13 @@ export default function ListaEquipos(){
             <DataTable
                 columns={ColumnCategorias}
                 data={equipos}
-                pagination
+                // pagination
                 expandableRows
                 expandableRowsComponent={expandedComponents}
                 responsive
                 striped
                 highlightOnHover
                 noDataComponent="No hay equipos para mostrar"
-                // defaultSortFieldId="Fecha"
             />
         </div>
 

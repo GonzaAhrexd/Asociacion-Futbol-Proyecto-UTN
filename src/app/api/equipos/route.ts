@@ -57,30 +57,48 @@ export async function PUT(req: Request) {
     // Obtener el cuerpo de la solicitud
     const body = await req.json();
 
+
     // Extraer los datos del cuerpo
-    const { nro_equipo, dni_dt_fk, categoria_fk, nombre, division } = body;
+    const { nro_equipo,dni_dt_fk, categoria_fk, nombre, division } = body;
+
+  
+
 
     // Actualizar el equipo en la base de datos
-    const equipo = await prisma.$queryRaw`UPDATE Equipo SET dni_dt_fk = ${dni_dt_fk}, categoria_fk = ${categoria_fk}, nombre = ${nombre}, division = ${division} WHERE nro_equipo = ${nro_equipo}`;
+    // const equipoActualizado = await prisma.$queryRaw`UPDATE Equipo SET dni_dt_fk = ${dni_dt_fk}, categoria_fk = ${categoria_fk}, nombre = ${nombre}, division = ${division} WHERE nro_equipo = ${nro_equipo}`;
+
+    // Actualizar el equipo en la base de datos
+    const equipoActualizado = await prisma.equipo.update({
+      where: { nro_equipo },
+      data: {
+        nombre,
+        dni_dt_fk:Number(dni_dt_fk),
+        categoria_fk: categoria_fk,
+        division,
+      },
+    });
 
     // Devolver el equipo actualizado
-    return NextResponse.json("Equipo actualizado", { status: 201 });
+    return NextResponse.json(
+      { message: 'Equipo actualizado exitosamente', equipo: equipoActualizado },
+      { status: 200 }
+    );
 
   } catch (error) {
     return handleError('Error al actualizar el equipo');
   }
 }
 
+
+
 export async function DELETE(req: Request) {
   try{
-    // Obtener el cuerpo de la solicitud
-    const body = await req.json();
 
-    // Extraer los datos del cuerpo
-    const { nro_equipo } = body;
+    const { searchParams } = new URL(req.url);
+    const nombre = searchParams.get('nombre');
 
     // Eliminar el equipo de la base de datos
-    const equipo = await prisma.$queryRaw`DELETE FROM Equipo WHERE nro_equipo = ${nro_equipo}`;
+    const equipo = await prisma.$queryRaw`DELETE FROM Equipo WHERE nombre = ${nombre}`;
 
     // Devolver el equipo eliminado
     return NextResponse.json(equipo, { status: 201 });
@@ -89,3 +107,4 @@ export async function DELETE(req: Request) {
     return handleError('Error al eliminar el equipo');
   }
 }
+

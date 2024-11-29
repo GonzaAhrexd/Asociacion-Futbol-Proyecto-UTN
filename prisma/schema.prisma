@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -36,7 +35,7 @@ model Jugador {
   dni_jugador_fk Int @id // PK y FK
   nro_equipo Int?
   categoria_fk String
-  nro_socio Int
+  nro_socio Int 
   foto String
   es_responsable Boolean @default(false)
 
@@ -165,7 +164,7 @@ model Fecha {
 
 model RuedaFecha {
   codigo_rueda_fk Int
-  codigo_fecha_fk Int 
+  codigo_fecha_fk Int
 
   fecha Fecha @relation(fields: [codigo_fecha_fk], references: [codigo_fecha])
   rueda Rueda @relation(fields: [codigo_rueda_fk], references: [codigo_rueda])

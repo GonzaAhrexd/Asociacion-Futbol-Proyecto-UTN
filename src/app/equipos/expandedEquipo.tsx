@@ -1,14 +1,12 @@
 import React from 'react';
 import InputText from '@/components/Inputs/InputText';
 import { eliminarEquipo, actualizarEquipo } from '../../utils/equipos/equipos';
-import InputNumber from '@/components/Inputs/InputNumber';
 import { useForm } from 'react-hook-form';
-import Swal from 'sweetalert2';
 
 interface Equipo {
   nombre: string;
   dni_dt_fk: number;
-  categoria_fk: number;
+  categoria_fk: string;
   division: string;
 }
 
@@ -30,13 +28,10 @@ export default function ExpandedEquipo({ data }: Equipo) {
   };
 
   const onSubmit = async (values: any) => {
-    
-        console.log(values);
 
-        values.nombre_original = data.nombre;
-        values.nombre_nuevo = values.nombre;
-        values.dni_dt_fk = Number(values.dni_dt_fk);
-        values.division = Number(values.edad_maxima);
+        values.nro_equipo=data.nro_equipo;
+        console.log(values);
+        await actualizarEquipo(values);
   };
 
   return (
@@ -49,33 +44,36 @@ export default function ExpandedEquipo({ data }: Equipo) {
       >
       {/* Input para el nombre del equipo */}
       <InputText
-                      campo="Nombre del equipo"
-                      placeholder="Ej: Barcelona FC"
-                      type="text"
-                      nombre="nombre"
-                      register={register}
-                      setValue={setValue}
-                      errors={errors.nombre}
-                      require
-                    />
+        campo="Nombre del equipo"
+        placeholder="Ej: Barcelona FC"
+        type="text"
+        nombre="nombre"
+        valor={data.nombre}
+        register={register}
+        setValue={setValue}
+        errors={errors.nombre}
+        require
+      />
                     {/* Select para elegir la división */}
                    <div className="mt-2">
-                      <label className="block font-semibold" htmlFor="dni_dt">
+                      <label className="block font-semibold" htmlFor="dni_dt_fk">
                         DNI del Director Tecnico
                       </label>
                       <select
-                        id="dni_dt"
-                        {...register("dni_dt", { required: "Seleccione un dni de DT" })}
+                        id="dni_dt_fk"
+                        {...register("dni_dt_fk", { required: "Seleccione un dni de DT" })}
                         className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900 ${
                           errors.dni_dt ? 'mt-1 text-red-600' : ''
                         }`}
                       >
-                        <option value="A">444444444</option>
-                        <option value="B">555555555</option>
-                        <option value="C">666666666</option>
+                        
+                        <option value={data.dni_dt_fk}>{data.dni_dt_fk}</option>
+                        <option value="1345">1345</option>
+                        <option value="12345678">12345678</option>
+                        <option value="66666666">66666666</option>
                       </select>
-                      {errors.dni_dt && (
-                        <p className="text-red-500 text-xs italic">{errors.dni_dt.message}</p>
+                      {errors.dni_dt_fk && (
+                        <p className="text-red-500 text-xs italic">{errors.dni_dt_fk.message}</p>
                       )}
                     </div>
                     
@@ -91,6 +89,7 @@ export default function ExpandedEquipo({ data }: Equipo) {
                           errors.division ? 'border-red-500' : ''
                         }`}
                       >
+                        <option value={data.division}>Division {data.division}</option>
                         <option value="A">División A</option>
                         <option value="B">División B</option>
                         <option value="C">División C</option>
@@ -102,22 +101,23 @@ export default function ExpandedEquipo({ data }: Equipo) {
 
                     {/* Select para elegir la división */}
                     <div className="mt-2">
-                        <label className="block font-semibold" htmlFor="categoria">
+                        <label className="block font-semibold" htmlFor="categoria_fk">
                           Categoria
                         </label>
                         <select
-                          id="categoria"
-                          {...register("categoria", { required: "Seleccione una categoria" })}
+                          id="categoria_fk"
+                          {...register("categoria_fk", { required: "Seleccione una categoria" })}
                           className={`block text-black w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-green-900  ${
-                            errors.categoria ? 'border-red-500' : ''
+                            errors.categoria_fk ? 'border-red-500' : ''
                           }`}
                         >
-                          <option value="A">Juvenil</option>
-                          <option value="B">Mayores</option>
-                          <option value="C">Jubilados</option>
+                          <option value={data.categoria_fk}>{data.categoria_fk}</option>
+                          <option value="juvenil">juvenil</option>
+                          <option value="Maxi">Maxi</option>
+                          <option value="Super">Super</option>
                         </select>
-                        {errors.categoria && (
-                          <p className="text-red-500 text-xs italic">{errors.categoria.message}</p>
+                        {errors.categoria_fk && (
+                          <p className="text-red-500 text-xs italic">{errors.categoria_fk.message}</p>
                         )}
                     </div>
 
